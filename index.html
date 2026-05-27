@@ -1,0 +1,2338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SteedSize — Know What Rug, Every Day</title>
+<meta name="description" content="Free daily rug weight checker for horse owners.">
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:#F5F0E8;
+  --warm-white:#FAF8F4;
+  --bark:#6B4F3A;
+  --bark-light:#8B6B52;
+  --bark-light-aa:#7A5535;
+  --sage:#7A8C6E;
+  --sage-light:#A4B595;
+  --sage-pale:#E8EDE4;
+  --mud:#3D2E1E;
+  --gold:#C4923A;
+  --gold-pale:#F5E6CC;
+  --mist:#B8C4BE;
+  --frost-pale:#EEF4F8;
+  --sky-aa:#2A6E8A;
+  --alert:#A0422A;
+  --alert-pale:#FAE8E0;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--mud);min-height:100vh;overflow-x:hidden;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(61,46,30,0.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);}
+.nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;cursor:pointer;position:relative;z-index:110;}
+.nav-logo-mark{width:26px;height:26px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.nav-logo-text{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--cream);font-weight:600;letter-spacing:0.02em;}
+.nav-logo-text span{color:var(--gold);font-style:italic;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-links{display:flex;gap:20px;align-items:center;}
+.nav-links a{font-size:13px;color:var(--mist);text-decoration:none;transition:color 0.2s;}
+.nav-links a:hover{color:var(--cream);}
+.profile-pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);border-radius:20px;padding:5px 12px;cursor:pointer;transition:all 0.2s;}
+.profile-pill:hover{background:rgba(255,255,255,0.14);}
+.pp-icon{font-size:14px;}
+.pp-name{font-size:12px;color:var(--cream);font-weight:500;}
+.pp-edit{font-size:10px;color:var(--mist);margin-left:2px;}
+@media(max-width:580px){.nav-links{display:none;}}
+
+/* PROFILE MODAL */
+.overlay{position:fixed;inset:0;z-index:200;background:rgba(61,46,30,0.75);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn 0.3s ease;}
+.overlay.hidden{display:none;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--warm-white);border-radius:20px;padding:32px 28px;width:100%;max-width:440px;max-height:88vh;overflow-y:auto;animation:slideUp 0.35s ease;box-shadow:0 24px 60px rgba(61,46,30,0.25);}
+@keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.modal-horse{font-size:44px;text-align:center;margin-bottom:10px;}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--mud);text-align:center;margin-bottom:6px;font-weight:600;}
+.modal-sub{font-size:14px;color:var(--bark-light);text-align:center;line-height:1.65;margin-bottom:26px;}
+.m-field{margin-bottom:20px;}
+.m-label{display:block;font-size:11px;font-weight:600;color:var(--bark);margin-bottom:8px;letter-spacing:0.05em;text-transform:uppercase;}
+.m-chips{display:flex;flex-wrap:wrap;gap:7px;}
+.m-chip{padding:7px 15px;border:1.5px solid rgba(107,79,58,0.2);border-radius:50px;font-size:13px;color:var(--bark);background:white;cursor:pointer;transition:all 0.2s;font-family:'Outfit',sans-serif;}
+.m-chip:hover{border-color:var(--bark-light);}
+.m-chip.sel{background:var(--mud);color:var(--cream);border-color:var(--mud);}
+.m-input{width:100%;padding:11px 14px;border:1.5px solid rgba(107,79,58,0.18);border-radius:10px;font-family:'Outfit',sans-serif;font-size:16px;color:var(--mud);background:white;}
+.m-input:focus{outline:none;border-color:var(--bark);}
+.m-save{background:var(--mud);color:var(--cream);border:none;padding:14px;border-radius:50px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:500;cursor:pointer;width:100%;margin-top:8px;transition:background 0.2s;}
+.m-save:hover{background:var(--bark);}
+.m-skip{background:transparent;color:var(--bark-light-aa);border:none;font-family:'Outfit',sans-serif;font-size:13px;cursor:pointer;padding:10px 0;text-decoration:underline;text-underline-offset:3px;width:100%;text-align:center;margin-top:6px;}
+
+/* HERO — dark mud with atmospheric radial */
+.hero{background:var(--mud);padding:80px 20px 32px;position:relative;overflow:visible;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 15% 90%,rgba(107,79,58,0.5) 0%,transparent 60%),radial-gradient(ellipse 50% 40% at 85% 10%,rgba(122,140,110,0.15) 0%,transparent 55%);pointer-events:none;overflow:hidden;z-index:0;}
+.hero-inner{max-width:680px;margin:0 auto;position:relative;z-index:1;}
+.hero-tag{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:8px;opacity:0;animation:revealUp 0.8s ease 0.2s forwards;}
+.hero-tag::before{content:'';width:24px;height:1px;background:var(--gold);}
+@keyframes revealUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.hero-h1{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,7vw,70px);color:var(--cream);line-height:1.05;margin-bottom:12px;font-weight:500;opacity:0;animation:revealUp 0.8s ease 0.4s forwards;}
+.hero-h1 em{color:var(--gold);font-style:italic;}
+.hero-sub{font-size:16px;color:var(--mist);font-weight:300;line-height:1.7;margin-bottom:32px;max-width:440px;opacity:0;animation:revealUp 0.8s ease 0.6s forwards;}
+
+/* TAB NAV — warm white pill, dark active state */
+.tab-nav{display:flex;gap:0;background:var(--warm-white);border-radius:14px;padding:5px;margin-bottom:0;border:1px solid rgba(107,79,58,0.12);box-shadow:0 2px 12px rgba(61,46,30,0.15);opacity:0;animation:revealUp 0.8s ease 0.8s forwards;}
+.tab-nav-btn{flex:1;padding:11px 14px;border:none;border-radius:10px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;cursor:pointer;background:transparent;color:var(--bark-light);transition:all 0.25s;}
+.tab-nav-btn.active{background:var(--mud);color:var(--cream);box-shadow:0 2px 8px rgba(61,46,30,0.2);}
+.tab-nav-btn:hover:not(.active){color:var(--bark);}
+
+/* PANELS */
+.panel{display:none;animation:fadeUp 0.3s ease;}
+.panel.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* WEATHER WIDGET — glassy dark */
+.w-widget{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;overflow:hidden;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);}
+.w-loading{padding:44px 28px;text-align:center;display:none;}
+.w-horse{font-size:44px;display:block;margin-bottom:12px;animation:trot 0.5s ease infinite alternate;}
+@keyframes trot{from{transform:translateY(0)}to{transform:translateY(-8px)}}
+.w-loading-text{font-size:14px;color:var(--mist);font-weight:300;}
+.w-error{padding:12px 24px;display:none;}
+.w-error p{font-size:14px;color:var(--mist);margin-bottom:14px;line-height:1.7;}
+.manual-row{display:flex;gap:8px;max-width:320px;margin:0 auto;}
+.manual-row input{flex:1;padding:10px 14px;border:1px solid rgba(255,255,255,0.15);border-radius:10px;background:rgba(255,255,255,0.08);color:var(--cream);font-family:'Outfit',sans-serif;font-size:16px;}
+.manual-row input::placeholder{color:var(--mist);}
+.manual-row input:focus{outline:none;border-color:var(--gold);}
+.btn-go{background:var(--gold);color:var(--mud);border:none;padding:10px 20px;border-radius:50px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;}
+/* Secondary outline button style */
+.btn-outline{background:transparent;color:var(--cream);border:2px solid rgba(196,146,58,0.6);padding:10px 28px;border-radius:50px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.btn-outline:hover{background:rgba(196,146,58,0.12);border-color:var(--gold);}
+.w-content{display:block;}
+
+/* Weather top */
+.w-top{padding:20px 24px 16px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.w-loc-row{display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+.w-loc-dot{width:6px;height:6px;background:var(--sage-light);border-radius:50%;flex-shrink:0;}
+.w-loc-name{font-size:11px;color:var(--mist);text-transform:uppercase;letter-spacing:0.08em;}
+.w-temp-big{font-family:'Cormorant Garamond',serif;font-size:72px;color:var(--cream);line-height:1;display:flex;align-items:baseline;gap:2px;}
+.w-temp-big span{line-height:1;}
+.w-temp-big sup{font-size:22px;color:var(--gold);margin-top:12px;font-family:'Outfit',sans-serif;font-weight:300;}
+.w-cond{font-size:14px;color:var(--mist);font-weight:300;margin-top:6px;display:flex;align-items:center;gap:6px;}
+.w-meta{display:flex;flex-direction:column;gap:9px;align-items:flex-end;}
+.w-meta-item{text-align:right;}
+.w-meta-label{font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:var(--mist);margin-bottom:2px;}
+.w-meta-val{font-size:14px;color:var(--cream);font-weight:500;}
+
+/* Profile bar */
+.w-profile-bar{padding:10px 24px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.wpb-label{font-size:11px;color:var(--mist);}
+.wpb-horse{font-size:13px;color:var(--cream);font-weight:500;}
+.wpb-details{font-size:12px;color:rgba(184,196,190,0.7);font-weight:300;}
+.wpb-edit{background:transparent;border:1px solid rgba(255,255,255,0.14);border-radius:20px;color:var(--mist);font-family:'Outfit',sans-serif;font-size:11px;padding:3px 10px;cursor:pointer;transition:all 0.2s;margin-left:auto;}
+.wpb-edit:hover{color:var(--cream);border-color:rgba(255,255,255,0.3);}
+
+/* Rug slots */
+.w-slots{padding:14px 24px;display:grid;grid-template-columns:1fr 1fr;gap:10px;border-bottom:1px solid rgba(255,255,255,0.07);}
+.w-slot{border-radius:12px;padding:12px 15px;}
+.ws-n{background:rgba(196,146,58,0.15);border:1px solid rgba(196,146,58,0.25);}
+.ws-d{background:rgba(122,140,110,0.15);border:1px solid rgba(122,140,110,0.25);}
+.ws-label{font-size:9px;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;}
+.ws-n .ws-label{color:rgba(196,146,58,0.85);}
+.ws-d .ws-label{color:rgba(164,181,149,0.9);}
+.ws-weight{font-family:'Cormorant Garamond',serif;font-size:26px;margin-bottom:1px;}
+.ws-n .ws-weight{color:var(--gold);}
+.ws-d .ws-weight{color:var(--sage-light);}
+.ws-name{font-size:11px;color:var(--mist);font-weight:300;}
+.w-reason{padding:10px 24px 14px;font-size:13px;color:rgba(184,196,190,0.85);line-height:1.6;font-weight:300;}
+
+/* Forecast */
+.w-forecast{padding:12px 24px 16px;border-top:1px solid rgba(255,255,255,0.07);}
+.wf-label{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--mist);margin-bottom:10px;}
+.wf-row{display:flex;gap:5px;overflow-x:auto;padding-bottom:4px;}
+.wf-item{flex-shrink:0;text-align:center;background:rgba(255,255,255,0.05);border-radius:9px;padding:8px 9px 6px;min-width:60px;border:1px solid rgba(255,255,255,0.08);cursor:pointer;transition:all 0.2s;}
+.wf-item:hover,.wf-item.active{background:rgba(196,146,58,0.2);border-color:rgba(196,146,58,0.4);}
+.wf-day{font-size:9px;color:var(--mist);margin-bottom:3px;font-weight:500;}
+.wf-icon{font-size:14px;margin-bottom:3px;}
+.wf-temp{font-size:10px;color:var(--cream);font-weight:500;margin-bottom:2px;}
+.wf-rug{font-size:9px;color:var(--gold);}
+.w-bottom-row{padding:0 24px 14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.w-refresh{background:transparent;border:2px solid rgba(196,146,58,0.5);color:var(--cream);font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;padding:6px 16px;border-radius:50px;display:flex;align-items:center;gap:4px;transition:all 0.2s;}
+.w-refresh:hover{background:rgba(196,146,58,0.12);border-color:var(--gold);}
+.w-shop-btn{background:var(--gold);color:var(--mud);border:none;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;padding:7px 16px;border-radius:50px;cursor:pointer;transition:all 0.2s;}
+.w-shop-btn:hover{opacity:0.88;}
+
+/* Cold snap alert */
+.coldsnap{background:var(--alert-pale);border-left:4px solid var(--alert);border-radius:0 12px 12px 0;padding:13px 18px;margin-top:20px;display:none;gap:10px;align-items:flex-start;}
+.coldsnap.show{display:flex;}
+.cs-icon{font-size:18px;flex-shrink:0;}
+.cs-text{font-size:13px;color:var(--alert);line-height:1.6;}
+.cs-text strong{font-weight:600;}
+
+/* HERO FOOT — transition from dark to cream */
+.hero-foot{height:0;background:var(--mud);}
+
+/* PRODUCTS — cream background */
+.products-section{background:var(--cream);padding:36px 20px 56px;}
+.products-inner{max-width:900px;margin:0 auto;}
+
+/* Rec bar — mud */
+.ps-rec-bar{background:var(--mud);border-radius:14px;padding:18px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px;align-items:stretch;}
+.ps-pill{border-radius:10px;padding:8px 14px;text-align:center;}
+.ps-pill-n{background:rgba(196,146,58,0.2);border:1px solid rgba(196,146,58,0.3);}
+.ps-pill-d{background:rgba(122,140,110,0.2);border:1px solid rgba(122,140,110,0.3);}
+.ps-pill-label{font-size:9px;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;}
+.ps-pill-n .ps-pill-label{color:rgba(196,146,58,0.8);}
+.ps-pill-d .ps-pill-label{color:rgba(164,181,149,0.9);}
+.ps-pill-val{font-family:'Cormorant Garamond',serif;font-size:20px;}
+.ps-pill-n .ps-pill-val{color:var(--gold);}
+.ps-pill-d .ps-pill-val{color:var(--sage-light);}
+.ps-bar-text{flex:1;}
+.ps-bar-title{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--cream);margin-bottom:2px;}
+.ps-bar-sub{font-size:11px;color:var(--mist);font-weight:300;}
+.ps-bar-edit{font-size:11px;color:var(--mist);background:none;border:none;font-family:'Outfit',sans-serif;cursor:pointer;text-decoration:underline;text-underline-offset:3px;flex-shrink:0;}
+.ps-bar-edit:hover{color:var(--cream);}
+
+/* Forward banner */
+.forward-banner{border-radius:12px;padding:13px 18px;margin-bottom:18px;display:flex;gap:11px;align-items:flex-start;}
+.fb-cold{background:var(--frost-pale);border:1px solid rgba(42,110,138,0.15);}
+.fb-warm{background:var(--sage-pale);border:1px solid rgba(122,140,110,0.2);}
+.fb-alert{background:var(--alert-pale);border:1px solid rgba(160,66,42,0.2);}
+.fb-icon{font-size:18px;flex-shrink:0;}
+.fb-text{font-size:13px;line-height:1.6;font-weight:300;}
+.fb-cold .fb-text{color:var(--sky-aa);}
+.fb-alert .fb-text{color:var(--alert);}
+.fb-warm .fb-text{color:var(--bark);}
+.fb-text strong{font-weight:600;}
+
+/* Filters */
+.filter-row{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:18px;}
+.filter-label{font-size:11px;color:var(--bark-light-aa);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;}
+.fchip{padding:5px 13px;border:1.5px solid rgba(107,79,58,0.18);border-radius:50px;font-size:12px;color:var(--bark);background:var(--warm-white);cursor:pointer;transition:all 0.2s;font-family:'Outfit',sans-serif;}
+.fchip:hover{border-color:var(--bark);}
+.fchip.on{background:var(--mud);color:var(--cream);border-color:var(--mud);}
+.filter-sort{margin-left:auto;padding:5px 13px;border:1.5px solid rgba(107,79,58,0.18);border-radius:20px;font-size:12px;color:var(--bark);background:var(--warm-white);cursor:pointer;font-family:'Outfit',sans-serif;appearance:none;}
+
+/* Product cards */
+.products-carousel-wrap{position:relative;margin-bottom:18px;}
+.products-grid{display:flex;gap:14px;overflow-x:auto;padding:4px 2px 16px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.products-grid::-webkit-scrollbar{display:none;}
+.product-card{background:var(--warm-white);border-radius:14px;border:1px solid rgba(107,79,58,0.1);overflow:hidden;transition:all 0.25s;display:flex;flex-direction:column;flex:0 0 240px;scroll-snap-align:start;}
+.product-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(61,46,30,0.12);border-color:rgba(107,79,58,0.18);}
+/* Fade edge hint on carousel */
+.products-carousel-wrap::after{content:'';position:absolute;top:0;right:0;bottom:16px;width:48px;background:linear-gradient(to left,var(--cream),transparent);pointer-events:none;border-radius:0 14px 14px 0;}
+.pc-img{background:linear-gradient(135deg,var(--cream) 0%,var(--gold-pale) 100%);height:160px;display:flex;align-items:center;justify-content:center;font-size:56px;position:relative;overflow:hidden;}
+.pc-img::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 80% at 50% 120%,rgba(107,79,58,0.12) 0%,transparent 70%);}
+.pc-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:40px;background:linear-gradient(to top,rgba(107,79,58,0.08),transparent);}
+.pc-badge{position:absolute;top:10px;left:10px;font-size:10px;font-weight:600;padding:4px 10px;border-radius:50px;text-transform:uppercase;letter-spacing:0.04em;z-index:1;}
+.b-best{background:var(--gold-pale);color:var(--gold);}
+.b-day{background:var(--sage-pale);color:#4A6B42;}
+.b-sale{background:#FAE8E4;color:#7A2E1A;}
+.pc-body{padding:13px 15px;flex:1;display:flex;flex-direction:column;}
+.pc-retailer{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--bark-light-aa);margin-bottom:4px;}
+.pc-name{font-size:13px;font-weight:600;color:var(--mud);margin-bottom:3px;line-height:1.35;}
+.pc-weight{font-size:11px;color:#4A6B42;margin-bottom:4px;font-weight:500;}
+.pc-desc{font-size:12px;color:var(--bark-light);line-height:1.5;font-weight:300;flex:1;margin-bottom:10px;}
+.pc-delivery{font-size:11px;color:var(--sky-aa);font-weight:500;margin-bottom:8px;display:flex;align-items:center;gap:3px;}
+.pc-footer{display:flex;align-items:center;justify-content:space-between;gap:6px;}
+.pc-price-wrap{display:flex;flex-direction:column;justify-content:center;}
+.pc-price{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--mud);font-weight:600;}
+.pc-was{font-size:11px;color:var(--mist);text-decoration:line-through;font-family:'Outfit',sans-serif;font-weight:300;display:block;margin-bottom:2px;}
+.btn-buy{background:var(--mud);color:var(--cream);font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;padding:7px 13px;border-radius:50px;border:none;cursor:pointer;transition:all 0.2s;text-decoration:none;display:inline-block;}
+.btn-buy:hover{background:var(--bark);}
+.aff-note{font-size:11px;color:var(--bark-light-aa);display:flex;align-items:center;gap:5px;margin-top:6px;}
+.aff-dot{width:4px;height:4px;background:var(--bark-light-aa);border-radius:50%;flex-shrink:0;}
+
+/* Size CTA */
+.size-cta{background:var(--mud);border-radius:14px;padding:22px 26px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:28px;}
+/* Browse all CTA */
+.browse-all-cta{background:var(--gold-pale);border:1px solid rgba(196,146,58,0.3);border-radius:14px;padding:16px 20px;margin-bottom:18px;}
+.browse-all-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.browse-all-title{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--mud);font-weight:600;margin-bottom:3px;}
+.browse-all-sub{font-size:12px;color:var(--bark-light-aa);}
+.btn-browse{background:var(--mud);color:var(--cream);font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;padding:10px 20px;border-radius:50px;border:none;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.btn-browse:hover{background:var(--bark);}
+.size-cta h3{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--cream);margin-bottom:3px;}
+.size-cta p{font-size:13px;color:var(--mist);font-weight:300;}
+.btn-size{background:var(--gold);color:var(--mud);font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;padding:10px 20px;border-radius:50px;border:none;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.btn-size:hover{opacity:0.88;}
+
+/* SIZE GUIDE */
+.size-section{background:var(--cream);padding:44px 20px 56px;display:block;border-top:1px solid rgba(107,79,58,0.08);}
+.size-section.show{display:block;}
+.size-inner{max-width:560px;margin:0 auto;}
+.size-header{text-align:center;margin-bottom:28px;}
+.size-header h2{font-family:'Cormorant Garamond',serif;font-size:clamp(24px,4vw,36px);color:var(--mud);margin-bottom:7px;font-weight:500;}
+.size-header h2 em{color:var(--bark);font-style:italic;}
+.size-header p{font-size:14px;color:var(--bark-light);font-weight:400;line-height:1.6;}
+.step-prog{height:2px;background:rgba(107,79,58,0.12);border-radius:2px;margin-bottom:20px;}
+.step-prog-fill{height:100%;background:var(--bark);border-radius:2px;transition:width 0.4s ease;}
+.step-dots{display:flex;gap:7px;justify-content:center;margin-bottom:20px;}
+.sdot{width:8px;height:8px;border-radius:50%;background:rgba(107,79,58,0.2);transition:all 0.3s;}
+.sdot.active{background:var(--bark);width:24px;border-radius:4px;}
+.sdot.done{background:var(--sage);}
+.step-card{background:var(--warm-white);border-radius:14px;padding:24px;margin-bottom:12px;border:1px solid rgba(107,79,58,0.1);display:none;animation:fadeUp 0.3s ease;}
+.step-card.active{display:block;}
+.sc-title{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--mud);margin-bottom:4px;font-weight:600;}
+.sc-sub{font-size:14px;color:var(--bark-light);margin-bottom:20px;line-height:1.5;}
+/* Match modal label style exactly */
+.m-label{display:block;font-size:11px;font-weight:600;color:var(--bark);margin-bottom:8px;letter-spacing:0.05em;text-transform:uppercase;}
+.lhint{font-weight:400;text-transform:none;letter-spacing:0;color:var(--bark-light);font-size:11px;margin-left:4px;}
+/* Match modal input style exactly */
+.m-input{width:100%;padding:11px 14px;border:1.5px solid rgba(107,79,58,0.2);border-radius:10px;font-family:'Outfit',sans-serif;font-size:16px;color:var(--mud);background:white;}
+.m-input:focus{outline:none;border-color:var(--bark);}
+/* Match modal chip style exactly */
+.m-chip{padding:8px 16px;border:1.5px solid rgba(107,79,58,0.2);border-radius:50px;font-size:13px;color:var(--bark);background:white;cursor:pointer;transition:all 0.2s;font-family:'Outfit',sans-serif;}
+.m-chip:hover{border-color:var(--bark-light);}
+.m-chip.sel{background:var(--mud);color:var(--cream);border-color:var(--mud);}
+.m-chips{display:flex;flex-wrap:wrap;gap:8px;}
+.measure-tip{background:var(--sage-pale);border-radius:11px;padding:12px 15px;margin-bottom:16px;display:flex;gap:11px;border:1px solid rgba(122,140,110,0.2);}
+.mt-icon{font-size:18px;flex-shrink:0;}
+.mt-text{font-size:13px;color:var(--bark);line-height:1.6;font-weight:400;}
+.mt-text strong{color:var(--mud);font-weight:600;}
+.field-group{margin-bottom:18px;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:16px;}
+input[type="number"],input[type="text"],select{width:100%;padding:10px 13px;border:1.5px solid rgba(107,79,58,0.2);border-radius:10px;font-family:'Outfit',sans-serif;font-size:16px;color:var(--mud);background:white;transition:border-color 0.2s;appearance:none;}
+input:focus,select:focus{outline:none;border-color:var(--bark);}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B4F3A' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:36px;cursor:pointer;}
+.w-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(82px,1fr));gap:7px;margin-bottom:16px;}
+.w-opt{border:1.5px solid rgba(107,79,58,0.15);border-radius:11px;padding:10px 7px;text-align:center;cursor:pointer;transition:all 0.2s;background:white;}
+.w-opt:hover{border-color:var(--bark);background:var(--gold-pale);}
+.w-opt.sel{border-color:var(--bark);background:var(--gold-pale);}
+.wi{font-size:18px;margin-bottom:3px;}
+.wl{font-size:11px;font-weight:600;color:var(--mud);}
+.wt{font-size:10px;color:var(--bark-light);margin-top:1px;}
+.tog-group{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
+.tog{padding:6px 13px;border:1.5px solid rgba(107,79,58,0.18);border-radius:50px;font-family:'Outfit',sans-serif;font-size:13px;color:var(--bark);background:white;cursor:pointer;transition:all 0.2s;}
+.tog:hover{border-color:var(--bark);background:var(--gold-pale);}
+.tog.sel{background:var(--mud);color:var(--cream);border-color:var(--mud);}
+.btn-p{background:var(--mud);color:var(--cream);border:none;padding:12px 22px;border-radius:50px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.2s;width:100%;}
+.btn-p:hover{background:var(--bark);}
+.btn-s{background:transparent;color:var(--bark-light-aa);border:none;font-family:'Outfit',sans-serif;font-size:13px;cursor:pointer;padding:7px 0;text-decoration:underline;text-underline-offset:3px;}
+.btn-s:hover{color:var(--bark);}
+.btn-row{display:flex;flex-direction:column;gap:9px;align-items:center;}
+
+/* Size results */
+.size-result{background:var(--mud);border-radius:14px;padding:24px;margin-bottom:12px;color:var(--cream);text-align:center;display:none;}
+.size-result.show{display:block;}
+.sr-name{font-size:10px;color:var(--mist);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:5px;}
+.sr-size{font-family:'Cormorant Garamond',serif;font-size:52px;color:var(--gold);line-height:1;margin-bottom:3px;}
+.sr-size-label{font-size:13px;color:var(--mist);margin-bottom:14px;}
+.sr-div{border:none;border-top:1px solid rgba(255,255,255,0.1);margin:14px 0;}
+.sr-wt-title{font-size:10px;color:var(--mist);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:9px;}
+.sr-rec{background:rgba(196,146,58,0.15);border:1px solid rgba(196,146,58,0.3);border-radius:10px;padding:11px 15px;margin-bottom:7px;text-align:left;}
+.sr-rec-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
+.sr-rec-name{font-weight:500;color:var(--cream);font-size:14px;}
+.sr-badge{font-size:10px;padding:2px 9px;border-radius:20px;font-weight:600;}
+.srb-p{background:var(--gold);color:var(--mud);}
+.srb-a{background:rgba(255,255,255,0.1);color:var(--mist);}
+.sr-rec-desc{font-size:12px;color:var(--mist);line-height:1.5;font-weight:300;}
+.adv-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px;}
+.adv-card{background:var(--warm-white);border:1px solid rgba(107,79,58,0.1);border-radius:12px;padding:14px;display:none;}
+.adv-card.show{display:block;}
+.adv-icon{font-size:16px;margin-bottom:5px;}
+.adv-title{font-size:13px;font-weight:600;color:var(--mud);margin-bottom:3px;}
+.adv-text{font-size:12px;color:var(--bark-light);line-height:1.6;font-weight:300;}
+.tips-card{background:var(--frost-pale);border:1px solid rgba(180,200,215,0.3);border-radius:12px;padding:16px 18px;display:none;margin-bottom:12px;}
+.tips-card.show{display:block;}
+.tips-title{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--mud);margin-bottom:11px;}
+.tip-row{display:flex;gap:7px;margin-bottom:7px;font-size:12px;color:var(--bark);line-height:1.5;}
+.tip-arrow{color:var(--sage);flex-shrink:0;font-weight:600;}
+.sg-loading{text-align:center;padding:36px;display:none;}
+.sg-loading.show{display:block;}
+.sg-horse{font-size:40px;animation:trot 0.6s ease infinite alternate;}
+.sg-loading-text{font-size:14px;color:var(--bark-light);margin-top:10px;font-weight:400;}
+.restart-row{text-align:center;margin-top:14px;display:none;}
+.restart-row.show{display:block;}
+
+/* EMAIL */
+.email-section{background:#4A3828;padding:52px 20px;text-align:center;}
+.email-section h2{font-family:'Cormorant Garamond',serif;font-size:clamp(22px,4vw,36px);color:var(--cream);margin-bottom:7px;font-weight:500;}
+.email-section h2 em{color:var(--gold);font-style:italic;}
+.email-section p{font-size:14px;color:rgba(184,196,190,0.9);margin-bottom:22px;font-weight:300;}
+.email-form{display:flex;flex-direction:column;gap:10px;max-width:360px;margin:0 auto;}
+.email-form input{width:100%;padding:13px 18px;border:none;border-radius:12px;font-family:'Outfit',sans-serif;font-size:16px;background:rgba(255,255,255,0.1);color:var(--cream);border:1px solid rgba(255,255,255,0.15);}
+.email-form input::placeholder{color:rgba(184,196,190,0.45);}
+.email-form input:focus{outline:none;border-color:var(--gold);}
+.email-form button{background:transparent;color:var(--cream);border:2px solid rgba(196,146,58,0.6);padding:13px 24px;border-radius:50px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;cursor:pointer;width:auto;align-self:center;min-width:160px;transition:all 0.2s;}
+.email-form button:hover{background:rgba(196,146,58,0.12);border-color:var(--gold);}
+.email-note{font-size:12px;color:rgba(184,196,190,0.7);margin-top:9px;}
+@media(max-width:460px){.adv-grid{grid-template-columns:1fr;}.field-row{grid-template-columns:1fr;}}
+
+/* FOOTER */
+footer{background:var(--mud);padding:24px 20px;border-top:1px solid rgba(255,255,255,0.06);}
+.footer-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--cream);font-weight:600;letter-spacing:0.02em;}
+.footer-logo span{color:var(--gold);font-style:italic;}
+.footer-links{display:flex;gap:16px;}
+.footer-links a{font-size:12px;color:var(--mist);text-decoration:none;transition:color 0.2s;}
+.footer-links a:hover{color:var(--cream);}
+.footer-copy{font-size:11px;color:rgba(184,196,190,0.4);}
+.footer-disc{width:100%;font-size:11px;color:rgba(184,196,190,0.85);line-height:1.6;padding-top:13px;border-top:1px solid rgba(255,255,255,0.06);margin-top:8px;}
+
+/* DARK MODE OVERRIDES */
+@media(prefers-color-scheme:dark){
+  /* Only override text inside the dark hero section — everything else stays dark-on-light */
+  .hero-h1{color:var(--cream);}
+  .hero-sub{color:var(--mist);}
+  .hero-tag{color:var(--gold);}
+  /* Step cards, modal, size guide always have light bg — force dark text regardless of OS mode */
+  .step-card, .modal, .size-section, .size-header{
+    background:var(--warm-white);
+    color:var(--mud);
+  }
+  .sc-title{color:var(--mud) !important;}
+  .sc-sub{color:var(--bark-light) !important;}
+  .size-header h2{color:var(--mud) !important;}
+  .size-header p{color:var(--bark-light) !important;}
+  .modal-title{color:var(--mud) !important;}
+  .modal-sub{color:var(--bark-light) !important;}
+  .m-label{color:var(--bark) !important;}
+  .m-input{color:var(--mud) !important; background:white !important;}
+  .m-chip{color:var(--bark) !important; background:white !important;}
+  .wl{color:var(--mud) !important;}
+  .mt-text{color:var(--bark) !important;}
+}
+@media(max-width:540px){
+  .products-grid{grid-template-columns:1fr 1fr;}
+  .w-slots{grid-template-columns:1fr 1fr;}
+  .w-meta{flex-direction:row;flex-wrap:wrap;gap:10px;}
+  .w-meta-item{text-align:left;}
+}
+@media(max-width:380px){.products-grid{grid-template-columns:1fr;}}
+
+/* ===== MULTI-HORSE SYSTEM ===== */
+
+/* Modal screens */
+.modal-screen { display:none; }
+.modal-screen.active { display:block; animation:fadeUp 0.3s ease; }
+
+/* Welcome screen */
+.welcome-emoji { font-size:52px; text-align:center; margin-bottom:14px; }
+.welcome-title { font-family:'Cormorant Garamond',serif; font-size:28px; color:var(--mud); text-align:center; margin-bottom:8px; font-weight:600; }
+.welcome-title em { font-style:italic; color:var(--bark); }
+.welcome-sub { font-size:14px; color:var(--bark-light); text-align:center; line-height:1.7; margin-bottom:28px; }
+.welcome-features { display:flex; flex-direction:column; gap:10px; margin-bottom:28px; }
+.wf-row-item { display:flex; align-items:center; gap:12px; background:var(--cream); border-radius:12px; padding:11px 14px; }
+.wf-row-icon { font-size:20px; flex-shrink:0; }
+.wf-row-text { font-size:13px; color:var(--bark); line-height:1.45; }
+.wf-row-text strong { color:var(--mud); font-weight:600; }
+
+/* Horse form screen */
+.modal-step-label { font-size:11px; font-weight:600; color:var(--bark-light-aa); text-transform:uppercase; letter-spacing:0.08em; text-align:center; margin-bottom:4px; }
+.modal-step-title { font-family:'Cormorant Garamond',serif; font-size:24px; color:var(--mud); text-align:center; margin-bottom:6px; font-weight:600; }
+.modal-step-sub { font-size:13px; color:var(--bark-light); text-align:center; line-height:1.6; margin-bottom:22px; }
+.name-required { color:var(--alert); font-size:11px; margin-left:3px; }
+
+/* Confirmation screen */
+.horse-confirm-card { background:var(--mud); border-radius:16px; padding:20px; text-align:center; margin-bottom:20px; }
+.hcc-emoji { font-size:40px; margin-bottom:8px; }
+.hcc-name { font-family:'Cormorant Garamond',serif; font-size:26px; color:var(--gold); margin-bottom:4px; }
+.hcc-details { font-size:13px; color:var(--mist); font-weight:300; line-height:1.6; }
+.confirm-actions { display:flex; flex-direction:column; gap:10px; }
+.btn-add-another { background:transparent; color:var(--bark); border:1.5px solid rgba(107,79,58,0.25); padding:12px; border-radius:50px; font-family:'Outfit',sans-serif; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.2s; }
+.btn-add-another:hover { border-color:var(--bark); background:var(--gold-pale); }
+
+/* Horse switcher dropdown */
+.switcher-wrap { position:relative; }
+.switcher-dropdown { position:absolute; top:calc(100% + 10px); right:0; background:var(--warm-white); border-radius:16px; padding:10px; min-width:240px; box-shadow:0 12px 40px rgba(61,46,30,0.2); border:1px solid rgba(107,79,58,0.12); z-index:150; display:none; animation:slideUp 0.2s ease; }
+.switcher-dropdown.open { display:block; }
+.sd-label { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; color:var(--bark-light-aa); padding:4px 8px 8px; }
+.horse-card-item { display:flex; align-items:center; gap:10px; padding:10px 10px; border-radius:10px; cursor:pointer; transition:all 0.2s; }
+.horse-card-item:hover { background:var(--cream); }
+.horse-card-item.active-horse { background:var(--gold-pale); }
+.hci-emoji { font-size:22px; flex-shrink:0; }
+.hci-info { flex:1; min-width:0; }
+.hci-name { font-size:13px; font-weight:600; color:var(--mud); margin-bottom:1px; }
+.hci-details { font-size:11px; color:var(--bark-light); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.hci-actions { display:flex; gap:4px; flex-shrink:0; }
+.hci-btn { background:transparent; border:none; font-size:13px; cursor:pointer; padding:4px 5px; border-radius:6px; transition:background 0.2s; opacity:0.6; }
+.hci-btn:hover { background:rgba(107,79,58,0.1); opacity:1; }
+.hci-tick { font-size:14px; color:var(--gold); flex-shrink:0; }
+.sd-divider { border:none; border-top:1px solid rgba(107,79,58,0.1); margin:6px 0; }
+.btn-add-horse { display:flex; align-items:center; gap:8px; width:100%; padding:10px; background:transparent; border:none; border-radius:10px; font-family:'Outfit',sans-serif; font-size:13px; font-weight:600; color:var(--bark); cursor:pointer; transition:all 0.2s; }
+.btn-add-horse:hover { background:var(--cream); }
+.btn-add-horse-icon { width:28px; height:28px; background:var(--mud); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; color:var(--cream); flex-shrink:0; }
+
+/* Active horse count badge on nav pill */
+.pp-count { font-size:10px; background:var(--gold); color:var(--mud); border-radius:50%; width:16px; height:16px; display:inline-flex; align-items:center; justify-content:center; font-weight:700; margin-left:2px; }
+
+/* ABOUT PAGE (inline) */
+.about-overlay{display:none;position:fixed;inset:0;z-index:200;overflow-y:auto;background:var(--cream);}
+.about-overlay.open{display:block;}
+.about-close{position:static;background:transparent;color:var(--mist);border:none;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;}
+.about-hero-inner{max-width:760px;margin:0 auto;position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end;}
+.ao-hero{background:var(--mud);padding:72px 20px 0;position:relative;overflow:hidden;}
+.ao-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 85% 30%,rgba(107,79,58,0.5) 0%,transparent 60%);pointer-events:none;}
+.ao-hero-text{padding-bottom:20px;}
+.ao-tag{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.ao-tag::before{content:'';width:24px;height:1px;background:var(--gold);}
+.ao-h1{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,5vw,48px);color:var(--cream);line-height:1.1;margin-bottom:14px;font-weight:500;}
+.ao-h1 em{color:var(--gold);font-style:italic;}
+.ao-sub{font-size:15px;color:var(--mist);font-weight:300;line-height:1.7;}
+.ao-photo-wrap{position:relative;align-self:end;}
+.ao-photo{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:center top;border-radius:16px 16px 0 0;display:block;}
+.ao-photo-cap{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(61,46,30,0.9),transparent);padding:20px 16px 14px;}
+.ao-photo-name{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--cream);font-weight:500;}
+.ao-photo-sub{font-size:11px;color:var(--mist);margin-top:2px;}
+.ao-body{max-width:760px;margin:0 auto;padding:40px 20px 60px;}
+.ao-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--bark-light-aa);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.ao-label::after{content:'';flex:1;height:1px;background:rgba(107,79,58,0.15);}
+.ao-h2{font-family:'Cormorant Garamond',serif;font-size:clamp(22px,4vw,34px);color:var(--mud);line-height:1.2;margin-bottom:18px;font-weight:500;}
+.ao-h2 em{color:var(--bark);font-style:italic;}
+.ao-p{font-size:15px;color:var(--bark);line-height:1.85;font-weight:300;}
+.ao-p+.ao-p{margin-top:16px;}
+.ao-p strong{color:var(--mud);font-weight:600;}
+.ao-quote{border-left:3px solid var(--gold);padding:16px 24px;margin:28px 0;background:var(--warm-white);border-radius:0 12px 12px 0;}
+.ao-quote p{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--mud);line-height:1.5;font-style:italic;font-weight:400;}
+.ao-values{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:28px 0;}
+.ao-val{background:var(--warm-white);border-radius:14px;padding:20px;border:1px solid rgba(107,79,58,0.1);}
+.ao-val-icon{font-size:24px;margin-bottom:10px;}
+.ao-val-title{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--mud);font-weight:500;margin-bottom:5px;}
+.ao-val-text{font-size:12px;color:var(--bark-light);line-height:1.6;font-weight:300;}
+.ao-mission{background:var(--mud);border-radius:16px;padding:32px 28px;margin-bottom:40px;text-align:center;}
+.ao-mission h3{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,3vw,26px);color:var(--cream);margin-bottom:10px;font-weight:500;line-height:1.2;}
+.ao-mission h3 em{color:var(--gold);font-style:italic;}
+.ao-mission p{font-size:14px;color:var(--mist);line-height:1.7;font-weight:300;max-width:480px;margin:0 auto;}
+.ao-section{margin-bottom:40px;}
+@media(max-width:560px){.about-hero-inner{grid-template-columns:1fr;gap:0;} .ao-photo-wrap{margin-top:0;} .ao-values{grid-template-columns:1fr;} .ao-photo{aspect-ratio:4/5;object-position:center 15%;border-radius:16px;}}
+
+/* Carousel nav arrows — desktop only */
+.carousel-arrow{display:none;position:absolute;top:50%;transform:translateY(-60%);z-index:10;width:36px;height:36px;border-radius:50%;background:var(--mud);border:none;color:var(--cream);font-size:16px;cursor:pointer;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(61,46,30,0.2);transition:all 0.2s;opacity:0.85;}
+.carousel-arrow:hover{opacity:1;background:var(--bark);}
+.carousel-arrow.left{left:-14px;}
+.carousel-arrow.right{right:-14px;}
+.carousel-arrow.hidden{opacity:0;pointer-events:none;}
+@media(min-width:600px){.carousel-arrow{display:flex;}}
+
+
+/* Personalise nudge banner */
+.personalise-banner{display:none;align-items:center;gap:10px;background:var(--gold-pale);border:1px solid rgba(196,146,58,0.25);border-radius:10px;padding:10px 14px;margin-bottom:14px;}
+.personalise-banner.visible{display:flex;}
+.pb-text{font-size:12px;color:var(--bark);line-height:1.5;flex:1;}
+.pb-text strong{color:var(--mud);}
+.pb-btn{font-size:11px;font-weight:600;color:var(--mud);background:var(--gold);border:none;border-radius:50px;padding:5px 12px;cursor:pointer;white-space:nowrap;font-family:'Outfit',sans-serif;}
+
+
+/* HAMBURGER MENU */
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;margin-left:8px;z-index:101;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--cream);border-radius:2px;transition:all 0.3s;}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mobile-menu{display:none;position:fixed;top:56px;left:0;right:0;background:rgba(61,46,30,0.98);backdrop-filter:blur(16px);padding:16px 20px 20px;z-index:99;border-bottom:1px solid rgba(255,255,255,0.08);flex-direction:column;gap:0;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-size:15px;color:var(--mist);text-decoration:none;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);transition:color 0.2s;font-family:'Outfit',sans-serif;}
+.mobile-menu a:last-child{border-bottom:none;}
+.mobile-menu a:hover{color:var(--cream);}
+@media(max-width:580px){
+  .hamburger{display:flex;}
+  .nav-links{display:none !important;}
+}
+
+</style>
+</head>
+<body>
+
+<!-- HORSE PROFILE MODAL -->
+<div class="overlay hidden" id="profile-overlay">
+  <div class="modal">
+
+    <!-- SCREEN 1: Welcome -->
+    <div class="modal-screen" id="ms-welcome">
+      <div class="welcome-emoji">🐴</div>
+      <div class="welcome-title">Welcome to <em>SteedSize</em></div>
+      <div class="welcome-sub">The free daily rug checker, personalised to your horse. Takes about a minute to set up.</div>
+      <div class="welcome-features">
+        <div class="wf-row-item"><div class="wf-row-icon">🌤️</div><div class="wf-row-text"><strong>Live local weather</strong> matched to your horse's coat and conditions</div></div>
+        <div class="wf-row-item"><div class="wf-row-icon">📏</div><div class="wf-row-text"><strong>Rug size guide</strong> so you always buy the right fit</div></div>
+        <div class="wf-row-item"><div class="wf-row-icon">🐴</div><div class="wf-row-text"><strong>Multiple horses</strong> — add your whole yard and switch between them</div></div>
+      </div>
+      <button class="m-save" onclick="showModalScreen('ms-form')">Let's set up your first horse</button>
+      <button class="m-skip" onclick="skipProfile()">Skip for now</button>
+    </div>
+
+    <!-- SCREEN 2: Horse form -->
+    <div class="modal-screen" id="ms-form">
+      <div class="modal-horse">🐴</div>
+      <div class="modal-step-label" id="ms-form-label">Horse 1</div>
+      <div class="modal-step-title">Tell us about your horse</div>
+      <div class="modal-step-sub">We'll use this to personalise the daily rug recommendation.</div>
+
+      <div class="m-field">
+        <label class="m-label">Name <span class="name-required">*</span></label>
+        <input class="m-input" type="text" id="p-name" placeholder="e.g. Biscuit" maxlength="30"/>
+        <div id="p-name-error" style="display:none;font-size:12px;color:var(--alert);margin-top:5px;">⚠️ Please give your horse a name</div>
+      </div>
+
+      <div class="m-field">
+        <label class="m-label">Coat</label>
+        <div class="m-chips" id="p-coat-chips">
+          <button class="m-chip" onclick="mChip('coat','unclipped',this)">Full winter coat</button>
+          <button class="m-chip" onclick="mChip('coat','trace',this)">Trace clip</button>
+          <button class="m-chip" onclick="mChip('coat','hunter',this)">Hunter / full clip</button>
+        </div>
+      </div>
+
+      <div class="m-field">
+        <label class="m-label">Lives</label>
+        <div class="m-chips" id="p-living-chips">
+          <button class="m-chip" onclick="mChip('living','stabled',this)">Stabled (indoors)</button>
+          <button class="m-chip" onclick="mChip('living','field',this)">Field kept (outdoors)</button>
+          <button class="m-chip" onclick="mChip('living','both',this)">Both / varies</button>
+        </div>
+      </div>
+
+      <div class="m-field">
+        <label class="m-label">They tend to</label>
+        <div class="m-chips" id="p-feel-chips">
+          <button class="m-chip" onclick="mChip('feel','cold',this)">Run cold</button>
+          <button class="m-chip" onclick="mChip('feel','average',this)">Feel average</button>
+          <button class="m-chip" onclick="mChip('feel','warm',this)">Run warm</button>
+        </div>
+      </div>
+
+      <div class="m-field">
+        <label class="m-label">Build</label>
+        <div class="m-chips" id="p-build-chips">
+          <button class="m-chip" onclick="mChip('build','fine',this)">Fine / Lean</button>
+          <button class="m-chip" onclick="mChip('build','average',this)">Average</button>
+          <button class="m-chip" onclick="mChip('build','chunky',this)">Chunky / Broad</button>
+        </div>
+      </div>
+
+      <div class="m-field">
+        <label class="m-label">Breed <span class="lhint">(optional)</span></label>
+        <select class="m-input" id="p-breed" style="padding:10px 13px;">
+          <option value="">Select breed...</option>
+          <option>Thoroughbred</option><option>Warmblood</option><option>Cob</option>
+          <option>Irish Draft</option><option>Arabian</option><option>Shetland Pony</option>
+          <option>Welsh Pony/Cob</option><option>New Forest</option><option>Highland</option>
+          <option>Crossbreed / Unknown</option><option>Other</option>
+        </select>
+      </div>
+
+      <button class="m-save" onclick="saveHorse()">Save this horse</button>
+      <button class="m-skip" id="ms-form-back" onclick="showModalScreen('ms-welcome')" style="margin-top:8px;">← Back</button>
+    </div>
+
+    <!-- SCREEN 3: Confirmation -->
+    <div class="modal-screen" id="ms-confirm">
+      <div class="horse-confirm-card">
+        <div class="hcc-emoji">🐴</div>
+        <div class="hcc-name" id="confirm-name">Biscuit</div>
+        <div class="hcc-details" id="confirm-details">Full coat · Stabled · Average</div>
+      </div>
+      <div class="confirm-actions">
+        <button class="btn-add-another" onclick="addAnotherHorse()">+ Add another horse</button>
+        <button class="m-save" onclick="finishSetup()">Get my rug check</button>
+      </div>
+    </div>
+
+    <!-- SCREEN 4: Edit existing horse -->
+    <div class="modal-screen" id="ms-edit">
+      <div class="modal-step-title">Edit horse</div>
+      <div class="modal-step-sub">Update the details for this horse.</div>
+      <input type="hidden" id="edit-horse-id"/>
+
+      <div class="m-field">
+        <label class="m-label">Name <span class="name-required">*</span></label>
+        <input class="m-input" type="text" id="edit-name" placeholder="e.g. Biscuit" maxlength="30"/>
+        <div id="edit-name-error" style="display:none;font-size:12px;color:var(--alert);margin-top:5px;">⚠️ Please give your horse a name</div>
+      </div>
+
+      <div class="m-field">
+        <label class="m-label">Coat</label>
+        <div class="m-chips" id="edit-coat-chips">
+          <button class="m-chip" onclick="mChipEdit('coat','unclipped',this)">Full winter coat</button>
+          <button class="m-chip" onclick="mChipEdit('coat','trace',this)">Trace clip</button>
+          <button class="m-chip" onclick="mChipEdit('coat','hunter',this)">Hunter / full clip</button>
+        </div>
+      </div>
+
+      <div class="m-field">
+        <label class="m-label">Lives</label>
+        <div class="m-chips" id="edit-living-chips">
+          <button class="m-chip" onclick="mChipEdit('living','stabled',this)">Stabled (indoors)</button>
+          <button class="m-chip" onclick="mChipEdit('living','field',this)">Field kept (outdoors)</button>
+          <button class="m-chip" onclick="mChipEdit('living','both',this)">Both / varies</button>
+        </div>
+      </div>
+
+      <div class="m-field">
+        <label class="m-label">They tend to</label>
+        <div class="m-chips" id="edit-feel-chips">
+          <button class="m-chip" onclick="mChipEdit('feel','cold',this)">Run cold</button>
+          <button class="m-chip" onclick="mChipEdit('feel','average',this)">Feel average</button>
+          <button class="m-chip" onclick="mChipEdit('feel','warm',this)">Run warm</button>
+        </div>
+      </div>
+
+      <div class="m-field">
+        <label class="m-label">Build</label>
+        <div class="m-chips" id="edit-build-chips">
+          <button class="m-chip" onclick="mChipEdit('build','fine',this)">Fine / Lean</button>
+          <button class="m-chip" onclick="mChipEdit('build','average',this)">Average</button>
+          <button class="m-chip" onclick="mChipEdit('build','chunky',this)">Chunky / Broad</button>
+        </div>
+      </div>
+
+      <div class="m-field">
+        <label class="m-label">Breed <span class="lhint">(optional)</span></label>
+        <select class="m-input" id="edit-breed" style="padding:10px 13px;">
+          <option value="">Select breed...</option>
+          <option>Thoroughbred</option><option>Warmblood</option><option>Cob</option>
+          <option>Irish Draft</option><option>Arabian</option><option>Shetland Pony</option>
+          <option>Welsh Pony/Cob</option><option>New Forest</option><option>Highland</option>
+          <option>Crossbreed / Unknown</option><option>Other</option>
+        </select>
+      </div>
+
+      <button class="m-save" onclick="saveEditedHorse()">Save changes</button>
+      <button class="m-skip" onclick="closeProfile()">Cancel</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="https://flourishing-eclair-e8edf1.netlify.app" onclick="localStorage.setItem('steedsize_visited','1');window.location.href='https://flourishing-eclair-e8edf1.netlify.app';return false;">
+    <div class="nav-logo-text">Steed<span>Size</span></div>
+  </a>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/#home">Home</a>
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/about">About</a>
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/blog">Blog</a>
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/shop">Shop</a>
+    </div>
+    <div class="switcher-wrap" id="switcher-wrap">
+      <div class="profile-pill" onclick="toggleSwitcher(event)">
+        <span class="pp-icon">🐴</span>
+        <span class="pp-name" id="pp-name">My horses</span>
+        <span class="pp-edit" id="pp-chevron">▾</span>
+      </div>
+      <div class="switcher-dropdown" id="switcher-dropdown">
+        <div class="sd-label">Your horses</div>
+        <div id="switcher-horse-list"></div>
+        <hr class="sd-divider"/>
+        <button class="btn-add-horse" onclick="addHorseFromSwitcher()">
+          <div class="btn-add-horse-icon">+</div>
+          Add a horse
+        </button>
+      </div>
+    </div>
+    <button class="hamburger" id="hamburger-btn" onclick="toggleHamburger()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="https://flourishing-eclair-e8edf1.netlify.app/#home" onclick="closeMobileMenu()">Home</a>
+  <a href="https://flourishing-eclair-e8edf1.netlify.app/about" onclick="closeMobileMenu()">About</a>
+  <a href="https://flourishing-eclair-e8edf1.netlify.app/blog" onclick="closeMobileMenu()">Blog</a>
+  <a href="https://flourishing-eclair-e8edf1.netlify.app/shop" onclick="closeMobileMenu()">Shop</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-inner">
+    <div class="hero-tag">Free daily rug checker</div>
+    <h1 class="hero-h1">Know what rug,<br><em>every single day</em></h1>
+    <p class="hero-sub">Live local weather. Personalised to your horse. No guesswork, no wasted money.</p>
+
+    <div class="tab-nav">
+      <button class="tab-nav-btn active" onclick="switchTab('weather',this)">🌤️ Today's Rug Check</button>
+      <button class="tab-nav-btn" onclick="switchToSize()">📏 Rug Size Guide</button>
+    </div>
+
+  </div>
+</section>
+
+<div class="hero-foot"></div>
+
+<!-- WEATHER PANEL -->
+<div class="panel active" id="panel-weather">
+
+<section style="background:var(--mud);padding:20px 20px 32px;">
+  <div style="max-width:680px;margin:0 auto;">
+    <div class="w-widget">
+      <div id="w-error" style="display:none;"></div>
+      <div class="w-content" id="w-content">
+        <div class="w-top">
+          <div>
+            <div class="w-loc-row"><div class="w-loc-dot"></div><div class="w-loc-name" id="w-loc">--</div></div>
+            <div class="w-temp-big"><span id="w-temp">--</span><sup>°C</sup></div>
+            <div class="w-cond" id="w-cond">--</div>
+          </div>
+          <div class="w-meta">
+            <div class="w-meta-item"><div class="w-meta-label">Tonight low</div><div class="w-meta-val" id="w-low">--</div></div>
+            <div class="w-meta-item"><div class="w-meta-label">Rain chance</div><div class="w-meta-val" id="w-rain">--</div></div>
+            <div class="w-meta-item"><div class="w-meta-label">Wind</div><div class="w-meta-val" id="w-wind">--</div></div>
+          </div>
+        </div>
+        <div class="w-profile-bar">
+          <span class="wpb-label">🐴</span>
+          <span class="wpb-horse" id="wpb-horse">Your horse</span>
+          <span class="wpb-details" id="wpb-details">· Full coat · Stabled · Average</span>
+          <button class="wpb-edit" onclick="openProfile()">Edit profile</button>
+        </div>
+        <div class="w-slots">
+          <div class="w-slot ws-n">
+            <div class="ws-label">Tonight</div>
+            <div class="ws-weight" id="rec-night-w">--</div>
+            <div class="ws-name" id="rec-night-n">--</div>
+          </div>
+          <div class="w-slot ws-d">
+            <div class="ws-label">During the day</div>
+            <div class="ws-weight" id="rec-day-w">--</div>
+            <div class="ws-name" id="rec-day-n">--</div>
+          </div>
+        </div>
+        <div class="w-reason" id="w-reason"></div>
+        <div class="w-forecast">
+          <div class="wf-label">14-day forecast — tap any night to see matched rugs</div>
+          <div class="wf-row" id="wf-row"></div>
+        </div>
+        <div class="w-bottom-row">
+          <button class="w-refresh" onclick="requestLocation()">📍 Refresh location</button>
+          <button class="w-shop-btn" onclick="scrollToProducts()">Shop matching rugs</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="coldsnap" id="coldsnap">
+      <div class="cs-icon">❄️</div>
+      <div class="cs-text" id="coldsnap-text"></div>
+    </div>
+  </div>
+</section>
+<!-- PRODUCTS -->
+<section class="products-section" id="products">
+  <div class="products-inner">
+
+    <div class="ps-rec-bar">
+      <div class="ps-pill ps-pill-n">
+        <div class="ps-pill-label">Tonight</div>
+        <div class="ps-pill-val" id="ps-night-w">--</div>
+      </div>
+      <div class="ps-pill ps-pill-d">
+        <div class="ps-pill-label">Daytime</div>
+        <div class="ps-pill-val" id="ps-day-w">--</div>
+      </div>
+      <div class="ps-bar-text">
+        <div class="ps-bar-title" id="ps-bar-title">Rug recommendations</div>
+        <div class="ps-bar-sub" id="ps-bar-sub">Based on an average horse profile — add your horse to personalise</div>
+      </div>
+      <button class="ps-bar-edit" id="ps-bar-edit-btn" onclick="openProfile()">← Add your horse</button>
+    </div>
+
+    <div class="forward-banner fb-cold" id="forward-banner" style="display:none;">
+      <div class="fb-icon" id="fb-icon">📦</div>
+      <div class="fb-text" id="fb-text">Loading...</div>
+    </div>
+
+    <!-- Personalise nudge banner -->
+    <div class="personalise-banner" id="personalise-banner">
+      <span style="font-size:16px;">🐴</span>
+      <div class="pb-text"><strong>No horse added yet.</strong> These recommendations are based on an average horse profile. Add your horse so we can tailor them to their coat, build and living setup.</div>
+      <button class="pb-btn" onclick="openProfile()">Add horse</button>
+    </div>
+
+    <!-- Top 4 matched rugs carousel -->
+    <div class="products-carousel-wrap">
+      <button class="carousel-arrow left" id="carousel-left" onclick="scrollCarousel(-1)">&#8249;</button>
+      <div class="products-grid" id="products-grid"></div>
+      <button class="carousel-arrow right" id="carousel-right" onclick="scrollCarousel(1)">&#8250;</button>
+    </div>
+    <div style="text-align:center;font-size:11px;color:var(--bark-light);margin-top:-8px;margin-bottom:20px;letter-spacing:0.04em;">Swipe to see more</div>
+
+    <!-- Browse all rugs CTA -->
+    <div class="browse-all-cta">
+      <div class="browse-all-inner">
+        <div>
+          <div class="browse-all-title">Browse all rugs</div>
+          <div class="browse-all-sub">Filter by weight, type, brand and more</div>
+        </div>
+        <button class="btn-browse" onclick="openShopPage()">Shop all rugs</button>
+      </div>
+    </div>
+
+    <div class="aff-note">
+      <div class="aff-dot"></div>
+      SteedSize may earn a small commission on purchases via these links — at no extra cost to you. This keeps SteedSize free.
+    </div>
+
+    <div class="size-cta">
+      <div>
+        <h3>Not sure what size fits?</h3>
+        <p>Our free size guide walks you through measuring in minutes.</p>
+      </div>
+      <button class="btn-size" onclick="switchToSize()">Find my size</button>
+    </div>
+  </div>
+</section>
+
+</div><!-- end panel-weather -->
+
+<!-- SIZE PANEL -->
+<div class="panel" id="panel-size">
+<section class="size-section" id="size-guide-section">
+  <div class="size-inner">
+    <div class="size-header">
+      <h2>Find your <em>perfect rug size</em></h2>
+      <p>Three quick steps — we'll tell you exactly what size to buy and what weight you need.</p>
+    </div>
+    <div class="step-prog"><div class="step-prog-fill" id="step-prog-fill" style="width:0%"></div></div>
+    <div class="step-dots">
+      <div class="sdot active" id="sdot-0"></div>
+      <div class="sdot" id="sdot-1"></div>
+      <div class="sdot" id="sdot-2"></div>
+    </div>
+
+    <!-- STEP 0: Horse basics — styled like the modal -->
+    <div class="step-card active" id="sg-step-0">
+      <div class="sc-title">Tell us about your horse</div>
+      <div class="sc-sub">This helps us adjust the size recommendation for your horse's shape and build.</div>
+
+      <!-- Saved horse selector — only shown if horses exist -->
+      <div class="field-group" id="sg-saved-horses-group" style="display:none;">
+        <label class="m-label">Select a horse</label>
+        <select class="m-input" id="sg-horse-select" onchange="sgHandleHorseSelect(this.value)">
+          <option value="">— Select a horse —</option>
+          <!-- Populated by JS -->
+        </select>
+        <div style="font-size:12px;color:var(--bark-light);margin-top:7px;">Selecting a horse pre-fills their details below. You can still edit anything.</div>
+      </div>
+
+      <div class="field-group">
+        <label class="m-label">Name <span class="lhint">(optional)</span></label>
+        <input class="m-input" type="text" id="horse-name" placeholder="e.g. Biscuit"/>
+      </div>
+      <div class="field-group">
+        <label class="m-label">Build</label>
+        <div class="m-chips" id="sg-build-chips">
+          <button class="m-chip" onclick="sgChip('build','fine',this)">Fine / Lean</button>
+          <button class="m-chip" onclick="sgChip('build','average',this)">Average</button>
+          <button class="m-chip" onclick="sgChip('build','chunky',this)">Chunky / Broad</button>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="m-label">Breed <span class="lhint">(optional)</span></label>
+        <select class="m-input" id="sg-breed" style="padding:10px 13px;">
+          <option value="">Select breed...</option>
+          <option value="thoroughbred">Thoroughbred</option>
+          <option value="warmblood">Warmblood</option>
+          <option value="cob">Cob</option>
+          <option value="irish_draft">Irish Draft</option>
+          <option value="arabian">Arabian</option>
+          <option value="shetland">Shetland Pony</option>
+          <option value="welsh">Welsh Pony/Cob</option>
+          <option value="new_forest">New Forest</option>
+          <option value="highland">Highland</option>
+          <option value="crossbreed">Crossbreed / Unknown</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="btn-row">
+        <button class="btn-p" onclick="sgStep(1)">Next — Measurement</button>
+      </div>
+    </div>
+
+    <!-- STEP 1: Measurement with unit toggle -->
+    <div class="step-card" id="sg-step-1">
+      <div class="sc-title">Your horse's measurement</div>
+      <div class="sc-sub">Measure your horse and enter the number below. Choose your unit first.</div>
+
+      <!-- Unit toggle — styled like modal chips -->
+      <div class="field-group">
+        <label class="m-label">Unit</label>
+        <div class="m-chips" id="sg-unit-chips">
+          <button class="m-chip sel" onclick="sgSelUnit('inches',this)">Inches (UK)</button>
+          <button class="m-chip" onclick="sgSelUnit('cm',this)">Centimetres (EU)</button>
+        </div>
+      </div>
+
+      <!-- Dynamic measurement guide -->
+      <div class="measure-tip" id="sg-measure-tip">
+        <div class="mt-icon">📏</div>
+        <div class="mt-text" id="sg-measure-tip-text">
+          <strong>UK method — chest to rump:</strong> Start at the <strong>centre of your horse's chest</strong>, run the tape horizontally along the side of the body, and stop at the <strong>centre of the rump</strong>. If between sizes, always go up.<br/><br/>
+          <strong>No tape measure?</strong> A piece of string works just as well — mark the length and measure with a ruler afterwards.
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="m-label" id="sg-length-label">Measurement (inches)</label>
+        <input class="m-input" type="number" id="sg-length" placeholder="e.g. 72" min="36" max="96"/>
+        <div style="font-size:12px;color:var(--bark-light);margin-top:7px;" id="sg-range-hint">Typical range: 48–90 inches. If between sizes, always go up.</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-p" onclick="sgStep(2)">Next — Conditions</button>
+        <button class="btn-s" onclick="sgStep(0)">← Back</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Conditions -->
+    <div class="step-card" id="sg-step-2">
+      <div class="sc-title">Weather &amp; conditions</div>
+      <div class="sc-sub">This gives us the right weight recommendation alongside your size.</div>
+
+      <div class="field-group">
+        <label class="m-label">Typical overnight temperature</label>
+        <div class="w-grid" id="sg-wg">
+          <div class="w-opt" onclick="sgSelW('freezing')" data-v="freezing"><div class="wi">🧊</div><div class="wl">Freezing</div><div class="wt">Below 0°C</div></div>
+          <div class="w-opt" onclick="sgSelW('cold')" data-v="cold"><div class="wi">🌨️</div><div class="wl">Cold</div><div class="wt">0–5°C</div></div>
+          <div class="w-opt" onclick="sgSelW('cool')" data-v="cool"><div class="wi">🌥️</div><div class="wl">Cool</div><div class="wt">5–10°C</div></div>
+          <div class="w-opt" onclick="sgSelW('mild')" data-v="mild"><div class="wi">🌤️</div><div class="wl">Mild</div><div class="wt">10–15°C</div></div>
+          <div class="w-opt" onclick="sgSelW('warm')" data-v="warm"><div class="wi">☀️</div><div class="wl">Warm</div><div class="wt">15°C+</div></div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="m-label">Where does your horse sleep?</label>
+        <div class="m-chips" id="sg-stable-chips">
+          <button class="m-chip" onclick="sgChip('stable','stabled',this)">Stabled (indoors)</button>
+          <button class="m-chip" onclick="sgChip('stable','field',this)">Field kept (outdoors)</button>
+          <button class="m-chip" onclick="sgChip('stable','both',this)">Both / varies</button>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="m-label">Is your horse clipped?</label>
+        <div class="m-chips" id="sg-clip-chips">
+          <button class="m-chip" onclick="sgChip('clip','unclipped',this)">No — full coat</button>
+          <button class="m-chip" onclick="sgChip('clip','trace',this)">Trace / bib clip</button>
+          <button class="m-chip" onclick="sgChip('clip','hunter',this)">Hunter / full clip</button>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="m-label">How do they tend to feel?</label>
+        <div class="m-chips" id="sg-feel-chips">
+          <button class="m-chip" onclick="sgChip('feel','cold',this)">Always cold</button>
+          <button class="m-chip" onclick="sgChip('feel','average',this)">Average</button>
+          <button class="m-chip" onclick="sgChip('feel','warm',this)">Runs warm</button>
+        </div>
+      </div>
+
+      <div class="btn-row" style="margin-top:6px;">
+        <button class="btn-p" onclick="sgGenerate()">Get my recommendation</button>
+        <button class="btn-s" onclick="sgStep(1)">← Back</button>
+      </div>
+    </div>
+
+    <div class="sg-loading" id="sg-loading"><div class="sg-horse">🐴</div><div class="sg-loading-text">Calculating the perfect rug...</div></div>
+
+    <div class="size-result" id="size-result">
+      <div class="sr-name" id="sr-name"></div>
+      <div class="sr-size" id="sr-size"></div>
+      <div class="sr-size-label" id="sr-size-label"></div>
+      <hr class="sr-div">
+      <div class="sr-wt-title">Recommended rug weight</div>
+      <div id="sr-wt-recs"></div>
+    </div>
+    <div class="adv-grid">
+      <div class="adv-card" id="adv-1"><div class="adv-icon" id="adv-1-i"></div><div class="adv-title" id="adv-1-t"></div><div class="adv-text" id="adv-1-x"></div></div>
+      <div class="adv-card" id="adv-2"><div class="adv-icon" id="adv-2-i"></div><div class="adv-title" id="adv-2-t"></div><div class="adv-text" id="adv-2-x"></div></div>
+    </div>
+    <div class="tips-card" id="tips-card">
+      <div class="tips-title">Things to know when buying</div>
+      <div id="tips-list"></div>
+    </div>
+    <div class="restart-row" id="restart-row">
+      <button class="btn-s" onclick="sgRestart()">← Start again for a different horse</button>
+    </div>
+  </div>
+</section>
+</div><!-- end panel-size -->
+
+<!-- EMAIL -->
+<section class="email-section" id="signup">
+  <h2>Be part of <em>the herd</em></h2>
+  <p>Join the SteedSize newsletter for equestrian tips, seasonal rug guides and product advice. Free, always.</p>
+
+  <form
+    name="steedsize-newsletter"
+    method="POST"
+    data-netlify="true"
+    data-netlify-honeypot="bot-field"
+    id="signup-form"
+    onsubmit="handleSignup(event)"
+  >
+    <!-- Netlify honeypot spam filter — hidden from users -->
+    <input type="hidden" name="form-name" value="steedsize-newsletter"/>
+    <p style="display:none;"><input name="bot-field"/></p>
+
+    <div class="email-form">
+      <input
+        type="email"
+        name="email"
+        id="email-input"
+        placeholder="Your email address"
+        required
+      />
+      <button type="submit">Subscribe</button>
+    </div>
+  </form>
+
+  <div id="signup-success" style="display:none;">
+    <p style="color:var(--cream);font-size:15px;text-align:center;">🐴 You're on the list! We'll be in touch soon.</p>
+  </div>
+
+  <div class="email-note">No spam, ever. Unsubscribe any time.</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/#home">Home</a>
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/about">About</a>
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/blog">Blog</a>
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/shop">Shop</a>
+    </div>
+    <div class="footer-copy">© 2026 SteedSize</div>
+    <div class="footer-disc">SteedSize recommendations are based on widely used equestrian guidelines and are provided as general guidance only. They do not constitute professional veterinary or equestrian advice. Always use your own judgement and consult a qualified professional if you have any concerns about your horse's welfare.</div>
+  </div>
+</footer>
+
+<script>
+// ============================================================
+// MULTI-HORSE PROFILE SYSTEM
+// ============================================================
+
+let horses = [];
+let activeHorseId = null;
+let editingHorse = {};
+let editingHorseEdit = {};
+
+function getActiveHorse() {
+  return horses.find(h => h.id === activeHorseId) || { coat:'unclipped', living:'stabled', feel:'average', name:'' };
+}
+
+// Legacy alias used by weather/rec functions
+let profile = { coat:'unclipped', living:'stabled', feel:'average', name:'' };
+function syncProfileAlias() { profile = getActiveHorse(); }
+
+// ── LOCALSTORAGE ──────────────────────────────────────────
+function saveToStorage() {
+  try {
+    localStorage.setItem('steedsize_horses', JSON.stringify(horses));
+    localStorage.setItem('steedsize_active', String(activeHorseId));
+  } catch(e) { console.warn('Storage unavailable:', e); }
+}
+
+function loadFromStorage() {
+  try {
+    const saved = localStorage.getItem('steedsize_horses');
+    const savedActive = localStorage.getItem('steedsize_active');
+    if (saved) {
+      horses = JSON.parse(saved);
+      activeHorseId = savedActive ? parseInt(savedActive) : (horses[0]?.id || null);
+      syncProfileAlias();
+      return horses.length > 0;
+    }
+  } catch(e) { console.warn('Could not load storage:', e); }
+  return false;
+}
+
+// ── MODAL SCREENS ─────────────────────────────────────────
+function showModalScreen(screenId) {
+  document.querySelectorAll('.modal-screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(screenId).classList.add('active');
+}
+
+function openProfile() {
+  if (horses.length === 0) {
+    showModalScreen('ms-welcome');
+  } else {
+    resetHorseForm();
+    document.getElementById('ms-form-label').textContent = `Horse ${horses.length + 1}`;
+    document.getElementById('ms-form-back').style.display = 'block';
+    showModalScreen('ms-form');
+  }
+  document.getElementById('profile-overlay').classList.remove('hidden');
+  closeSwitcher();
+}
+
+function closeProfile() {
+  document.getElementById('profile-overlay').classList.add('hidden');
+}
+
+function skipProfile() {
+  closeProfile();
+  updateNavDisplay();
+}
+
+// ── ADDING A HORSE ────────────────────────────────────────
+function resetHorseForm() {
+  editingHorse = { coat:'', living:'', feel:'', build:'', breed:'' };
+  document.getElementById('p-name').value = '';
+  document.getElementById('p-name-error').style.display = 'none';
+  document.getElementById('p-breed').value = '';
+  // No defaults — user must make a conscious choice
+  ['p-coat-chips','p-living-chips','p-feel-chips','p-build-chips'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.querySelectorAll('.m-chip').forEach(c => c.classList.remove('sel'));
+  });
+}
+
+function setActiveChips(containerId, activeVal) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.querySelectorAll('.m-chip').forEach(btn => {
+    const match = btn.getAttribute('onclick').match(/'([^']+)',this/);
+    if (match) btn.classList.toggle('sel', match[1] === activeVal);
+  });
+}
+
+function showModalFieldError(groupId, msg) {
+  const group = document.getElementById(groupId);
+  if (!group) return;
+  // Remove any existing error
+  const existing = group.parentNode.querySelector('.modal-chip-error');
+  if (existing) existing.remove();
+  const err = document.createElement('div');
+  err.className = 'modal-chip-error';
+  err.style.cssText = 'font-size:12px;color:#A0422A;margin-top:5px;display:flex;align-items:center;gap:4px;';
+  err.innerHTML = '⚠️ ' + msg;
+  group.parentNode.appendChild(err);
+  group.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function mChip(group, val, btn) {
+  editingHorse[group] = val;
+  btn.closest('.m-chips').querySelectorAll('.m-chip').forEach(c => c.classList.remove('sel'));
+  btn.classList.add('sel');
+  // Clear any error for this group
+  const err = btn.closest('.m-field').querySelector('.modal-chip-error');
+  if (err) err.remove();
+}
+
+function saveHorse() {
+  const name = document.getElementById('p-name').value.trim();
+  if (!name) {
+    document.getElementById('p-name-error').style.display = 'block';
+    document.getElementById('p-name').focus();
+    return;
+  }
+  document.getElementById('p-name-error').style.display = 'none';
+  if (!editingHorse.coat) { showModalFieldError('p-coat-chips', 'Please select a coat type'); return; }
+  if (!editingHorse.living) { showModalFieldError('p-living-chips', 'Please select where your horse lives'); return; }
+  if (!editingHorse.feel) { showModalFieldError('p-feel-chips', 'Please select how they tend to feel'); return; }
+  if (!editingHorse.build) { showModalFieldError('p-build-chips', 'Please select their build'); return; }
+  const horse = {
+    id: Date.now(),
+    name,
+    coat: editingHorse.coat || 'unclipped',
+    living: editingHorse.living || 'stabled',
+    feel: editingHorse.feel || 'average',
+    build: editingHorse.build || 'average',
+    breed: document.getElementById('p-breed').value || ''
+  };
+  horses.push(horse);
+  if (!activeHorseId) activeHorseId = horse.id;
+  saveToStorage();
+  syncProfileAlias();
+  document.getElementById('confirm-name').textContent = horse.name;
+  document.getElementById('confirm-details').textContent = getHorseDetailStr(horse);
+  showModalScreen('ms-confirm');
+  updateNavDisplay();
+  refreshRecommendations();
+}
+
+function addAnotherHorse() {
+  resetHorseForm();
+  document.getElementById('ms-form-label').textContent = `Horse ${horses.length + 1}`;
+  document.getElementById('ms-form-back').style.display = 'none';
+  showModalScreen('ms-form');
+}
+
+function finishSetup() {
+  closeProfile();
+  updateNavDisplay();
+}
+
+function addHorseFromSwitcher() {
+  closeSwitcher();
+  resetHorseForm();
+  document.getElementById('ms-form-label').textContent = `Horse ${horses.length + 1}`;
+  document.getElementById('ms-form-back').style.display = 'block';
+  showModalScreen('ms-form');
+  document.getElementById('profile-overlay').classList.remove('hidden');
+}
+
+// ── EDITING ───────────────────────────────────────────────
+function editHorse(id, e) {
+  e.stopPropagation();
+  const horse = horses.find(h => h.id === id);
+  if (!horse) return;
+  editingHorseEdit = { ...horse };
+  closeSwitcher();
+  document.getElementById('edit-horse-id').value = id;
+  document.getElementById('edit-name').value = horse.name;
+  document.getElementById('edit-name-error').style.display = 'none';
+  document.getElementById('edit-breed').value = horse.breed || '';
+  setActiveChipsEdit('edit-coat-chips', horse.coat);
+  setActiveChipsEdit('edit-living-chips', horse.living);
+  setActiveChipsEdit('edit-feel-chips', horse.feel);
+  setActiveChipsEdit('edit-build-chips', horse.build || 'average');
+  showModalScreen('ms-edit');
+  document.getElementById('profile-overlay').classList.remove('hidden');
+}
+
+function setActiveChipsEdit(containerId, activeVal) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.querySelectorAll('.m-chip').forEach(btn => {
+    const match = btn.getAttribute('onclick').match(/'([^']+)',this/);
+    if (match) btn.classList.toggle('sel', match[1] === activeVal);
+  });
+}
+
+function mChipEdit(group, val, btn) {
+  editingHorseEdit[group] = val;
+  btn.closest('.m-chips').querySelectorAll('.m-chip').forEach(c => c.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+function saveEditedHorse() {
+  const name = document.getElementById('edit-name').value.trim();
+  if (!name) { document.getElementById('edit-name-error').style.display = 'block'; return; }
+  const id = parseInt(document.getElementById('edit-horse-id').value);
+  const idx = horses.findIndex(h => h.id === id);
+  if (idx === -1) return;
+  horses[idx] = { ...horses[idx], name, coat: editingHorseEdit.coat || horses[idx].coat, living: editingHorseEdit.living || horses[idx].living, feel: editingHorseEdit.feel || horses[idx].feel, build: editingHorseEdit.build || horses[idx].build || 'average', breed: document.getElementById('edit-breed').value || '' };
+  saveToStorage();
+  syncProfileAlias();
+  closeProfile();
+  updateNavDisplay();
+  refreshRecommendations();
+}
+
+// ── DELETING ──────────────────────────────────────────────
+function deleteHorse(id, e) {
+  e.stopPropagation();
+  const horse = horses.find(h => h.id === id);
+  if (!horse) return;
+  if (!confirm(`Remove ${horse.name} from your horses?`)) return;
+  horses = horses.filter(h => h.id !== id);
+  if (activeHorseId === id) activeHorseId = horses[0]?.id || null;
+  saveToStorage();
+  syncProfileAlias();
+  updateNavDisplay();
+  renderSwitcherDropdown();
+  refreshRecommendations();
+}
+
+// ── SWITCHING ─────────────────────────────────────────────
+function switchHorse(id) {
+  activeHorseId = id;
+  saveToStorage();
+  syncProfileAlias();
+  closeSwitcher();
+  updateNavDisplay();
+  refreshRecommendations();
+}
+
+function refreshRecommendations() {
+  profile = getActiveHorse();
+  if (wData) { updateRec(selectedDay||0); renderForecast(); renderProducts(selectedDay);
+  setTimeout(initCarouselArrows, 100); }
+  updateWidgetProfileBar();
+}
+
+// ── NAV SWITCHER ──────────────────────────────────────────
+function toggleSwitcher(e) {
+  e.stopPropagation();
+  const dd = document.getElementById('switcher-dropdown');
+  dd.classList.contains('open') ? closeSwitcher() : openSwitcher();
+}
+
+function openSwitcher() {
+  renderSwitcherDropdown();
+  document.getElementById('switcher-dropdown').classList.add('open');
+  document.getElementById('pp-chevron').textContent = '▴';
+  setTimeout(() => document.addEventListener('click', closeSwitcherOnOutside), 0);
+}
+
+function closeSwitcher() {
+  document.getElementById('switcher-dropdown').classList.remove('open');
+  document.getElementById('pp-chevron').textContent = '▾';
+  document.removeEventListener('click', closeSwitcherOnOutside);
+}
+
+function closeSwitcherOnOutside(e) {
+  if (!document.getElementById('switcher-wrap').contains(e.target)) closeSwitcher();
+}
+
+function renderSwitcherDropdown() {
+  const list = document.getElementById('switcher-horse-list');
+  if (horses.length === 0) {
+    list.innerHTML = '<div style="font-size:13px;color:var(--bark-light);padding:8px 10px 4px;">No horses added yet</div>';
+    return;
+  }
+  list.innerHTML = horses.map(h => `
+    <div class="horse-card-item ${h.id === activeHorseId ? 'active-horse' : ''}" onclick="switchHorse(${h.id})">
+      <div class="hci-emoji">🐴</div>
+      <div class="hci-info">
+        <div class="hci-name">${h.name}</div>
+        <div class="hci-details">${getHorseDetailStr(h)}</div>
+      </div>
+      ${h.id === activeHorseId ? '<div class="hci-tick">✓</div>' : ''}
+      <div class="hci-actions">
+        <button class="hci-btn" onclick="editHorse(${h.id},event)" title="Edit">✏️</button>
+        <button class="hci-btn" onclick="deleteHorse(${h.id},event)" title="Remove">🗑️</button>
+      </div>
+    </div>`).join('');
+}
+
+// ── DISPLAY ───────────────────────────────────────────────
+function getHorseDetailStr(h) {
+  const coat = {unclipped:'Full coat',trace:'Trace clip',hunter:'Full clip'}[h.coat]||'Full coat';
+  const living = {stabled:'Stabled',field:'Field kept',both:'Both'}[h.living]||'Stabled';
+  const feel = {cold:'Runs cold',average:'Average',warm:'Runs warm'}[h.feel]||'Average';
+  return `${coat} · ${living} · ${feel}`;
+}
+
+function updateNavDisplay() {
+  const active = getActiveHorse();
+  setText('pp-name', active.name || 'My horses');
+  updateWidgetProfileBar();
+  if (typeof updatePersonaliseBanner === 'function') updatePersonaliseBanner();
+}
+
+function updateWidgetProfileBar() {
+  const h = getActiveHorse();
+  setText('wpb-horse', h.name || 'Your horse');
+  setText('wpb-details', '· ' + getHorseDetailStr(h));
+}
+
+// Legacy alias
+function updateProfileDisplay() { updateNavDisplay(); }
+function saveProfile() { saveHorse(); }
+
+
+
+// ============================================================
+// WEATHER
+// ============================================================
+let wData = null;
+let selectedDay = null; // null = use 7-day average (default)
+
+// Calculate 7-day average overnight temperature
+function get7DayAvgTemp() {
+  if (!wData) return 8; // UK seasonal default
+  const mins = wData.daily.temperature_2m_min.slice(1, 8); // days 1-7 (skip tonight)
+  return mins.reduce((a, b) => a + b, 0) / mins.length;
+}
+
+// Get 7-day average rec weight
+function get7DayRec() {
+  const avgTemp = get7DayAvgTemp();
+  const avgWind = wData ? (wData.daily.wind_speed_10m_max?.slice(1,8).reduce((a,b)=>a+b,0)/7||0) : 0;
+  const avgRain = wData ? (wData.daily.precipitation_probability_max?.slice(1,8).reduce((a,b)=>a+b,0)/7||0) : 0;
+  return rugFromTemp(avgTemp, profile, avgWind, avgRain);
+}
+
+function requestLocation() {
+  hideEl('w-error');
+  if (!navigator.geolocation) {
+    showWErr('location-unavailable');
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    p => fetchWeather(p.coords.latitude, p.coords.longitude),
+    err => {
+      // Distinguish between error types for better user guidance
+      if (err.code === 1) showWErr('permission-denied');
+      else if (err.code === 2) showWErr('position-unavailable');
+      else showWErr('timeout');
+    },
+    {
+      timeout: 15000,           // Increased from 8s to 15s
+      maximumAge: 300000,       // Accept a cached position up to 5 mins old
+      enableHighAccuracy: false // Faster, uses network location not GPS
+    }
+  );
+}
+
+async function fetchWeather(lat, lon) {
+  try {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,precipitation_probability&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_probability_max,wind_speed_10m_max&timezone=auto&forecast_days=14`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Weather fetch failed');
+    const data = await res.json();
+
+    // Reverse geocode with a 5 second timeout — fail gracefully if slow
+    let locName = 'Your location';
+    try {
+      const controller = new AbortController();
+      const geoTimeout = setTimeout(() => controller.abort(), 5000);
+      const gr = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,
+        { signal: controller.signal }
+      );
+      clearTimeout(geoTimeout);
+      const gd = await gr.json();
+      locName = gd.address?.town || gd.address?.city || gd.address?.village || gd.address?.county || 'Your location';
+    } catch(e) {
+      // Geocoding failed or timed out — weather still loads fine
+      console.warn('Reverse geocode failed, using default location name');
+    }
+
+    wData = {...data, locName};
+    renderWeather();
+  } catch(e) {
+    console.warn('Weather fetch failed:', e);
+    showWErr('position-unavailable');
+  }
+}
+
+async function fetchByCity() {
+  const city = document.getElementById('manual-loc').value.trim();
+  if(!city) return;
+  hideEl('w-error');
+  try {
+    const r = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&limit=1`);
+    const d = await r.json();
+    if(!d.length) throw new Error();
+    fetchWeather(parseFloat(d[0].lat), parseFloat(d[0].lon));
+  } catch(e){ showWErr('position-unavailable'); }
+}
+
+function showWErr(reason){
+  // Widget always stays visible — just show error banner at top
+  const msgs = {
+    'permission-denied':   { title:'📍 Location blocked', body:'Allow location access in your browser or phone settings, then tap Try again below.', showRetry:true },
+    'position-unavailable':{ title:'📍 Location unavailable', body:'We couldn\'t detect your location automatically.', showRetry:false },
+    'timeout':             { title:'📍 Location timed out', body:'Your location took too long to load. Tap Try again or enter your location manually below.', showRetry:true },
+    'location-unavailable':{ title:'📍 Location not supported', body:'Your browser doesn\'t support automatic location detection.', showRetry:false }
+  };
+  const m = msgs[reason] || { title:'📍 Location needed', body:'We couldn\'t detect your location automatically.', showRetry:true };
+  const el = document.getElementById('w-error');
+  el.style.cssText = 'display:block;padding:16px 16px 0;';
+  el.innerHTML = `
+    <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:16px;">
+      <div style="font-size:13px;font-weight:600;color:var(--cream);margin-bottom:6px;">${m.title}</div>
+      <div style="font-size:12px;color:var(--mist);margin-bottom:12px;line-height:1.6;">${m.body}</div>
+      ${m.showRetry ? '<button id="retry-loc-btn" class="btn-outline" style="padding:9px 20px;margin-bottom:12px;">Try again</button>' : ''}
+      <div style="font-size:11px;color:rgba(184,196,190,0.7);margin-bottom:8px;font-weight:500;">Or enter your location manually:</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="text" id="manual-loc" placeholder="e.g. Newmarket, UK" style="flex:1;padding:10px 14px;border-radius:50px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08);color:var(--cream);font-family:'Outfit',sans-serif;font-size:16px;outline:none;"/>
+        <button id="manual-go-btn" class="btn-go">Go</button>
+      </div>
+      <div style="font-size:11px;color:rgba(184,196,190,0.85);margin-top:10px;">Your location is only used to fetch local weather — never stored or shared.</div>
+    </div>
+  `;
+  const retryBtn = document.getElementById('retry-loc-btn');
+  if(retryBtn) retryBtn.addEventListener('click', requestLocation);
+  const goBtn = document.getElementById('manual-go-btn');
+  if(goBtn) goBtn.addEventListener('click', fetchByCity);
+  const locInput = document.getElementById('manual-loc');
+  if(locInput) locInput.addEventListener('keydown', function(e){ if(e.key==='Enter') fetchByCity(); });
+}
+
+function wCode(c){
+  if(c===0)return{l:'Clear sky',i:'☀️'};
+  if(c<=2)return{l:'Partly cloudy',i:'⛅'};
+  if(c<=3)return{l:'Overcast',i:'☁️'};
+  if(c<=49)return{l:'Foggy',i:'🌫️'};
+  if(c<=59)return{l:'Drizzle',i:'🌦️'};
+  if(c<=69)return{l:'Rain',i:'🌧️'};
+  if(c<=79)return{l:'Snow',i:'❄️'};
+  if(c<=82)return{l:'Showers',i:'🌧️'};
+  return{l:'Thunderstorm',i:'⛈️'};
+}
+
+function rugFromTemp(t, p, windKph, rainPct) {
+  // Based on BETA/BHS framework — accurate as of 2025
+  // Unclipped horses are comfortable down to ~5°C without a rug (BHS)
+  // Clipping removes ~10°C worth of natural insulation (industry consensus)
+
+  const wind = windKph || 0;
+  const rain = rainPct || 0;
+  const isWindy = wind > 30;      // >30km/h meaningfully increases wind chill
+  const isWet   = rain > 50;      // >50% precipitation probability
+  const isField = p.living === 'field' || p.living === 'both';
+  const isHunter = p.coat === 'hunter';
+  const isTrace  = p.coat === 'trace';
+  const isUnclipped = p.coat === 'unclipped';
+
+  // --- BASE WEIGHT by temperature and clip type (BETA table) ---
+  let g = 0;
+
+  if (isHunter) {
+    // Full clip: loses all natural insulation
+    if      (t >= 15)  g = 100;
+    else if (t >= 10)  g = 200;
+    else if (t >= 5)   g = 250;
+    else if (t >= 0)   g = 300;
+    else               g = 400;
+  } else if (isTrace) {
+    // Trace/bib clip: partial insulation retained
+    if      (t >= 15)  g = 0;
+    else if (t >= 10)  g = 100;
+    else if (t >= 5)   g = 150;
+    else if (t >= 0)   g = 250;
+    else               g = 300;
+  } else {
+    // Unclipped: full winter coat — comfortable to ~5°C without rugging (BHS)
+    if      (t >= 10)  g = 0;
+    else if (t >= 5)   g = 0;    // BHS: unclipped horses fine down to 5°C
+    else if (t >= 0)   g = 100;
+    else               g = 200;
+  }
+
+  // --- FIELD ADJUSTMENT ---
+  // Field-kept horses face wind/rain exposure; stabled horses are sheltered
+  if (isField) g += 50;
+
+  // --- WIND & RAIN ADJUSTMENT ---
+  // Wind chill and wet conditions can make it feel significantly colder
+  if (isField && isWindy) g += 50;
+  if (isField && isWet)   g += 50;
+  // Stabled horses less affected by weather but draughty stables still count
+  if (!isField && isWindy) g += 25;
+
+  // --- INDIVIDUAL HORSE ADJUSTMENT ---
+  if (p.feel === 'cold') g += 50;
+  if (p.feel === 'warm') g -= 50;
+
+  // --- CLAMP & MAP TO STANDARD WEIGHTS ---
+  g = Math.max(0, Math.min(450, g));
+
+  if (g === 0)   return { w:'No rug', n:'No rug needed', g:0 };
+  if (g <= 100)  return { w:'100g',   n:'Lightweight',   g:100 };
+  if (g <= 200)  return { w:'200g',   n:'Medium weight', g:200 };
+  if (g <= 300)  return { w:'300g',   n:'Heavyweight',   g:300 };
+                 return { w:'400g',   n:'Extra heavy',   g:400 };
+}
+
+function renderWeather(){
+  hideEl('w-error');
+  // Reveal products section now we have weather data
+  document.getElementById('products').style.display = 'block';
+  const c=wData.current, d=wData.daily;
+  setText('w-loc', wData.locName);
+  setText('w-temp', Math.round(c.temperature_2m));
+  const wi=wCode(c.weather_code);
+  setText('w-cond', wi.i+' '+wi.l);
+  setText('w-low', Math.round(d.temperature_2m_min[0])+'°C');
+  setText('w-rain', (c.precipitation_probability||0)+'%');
+  setText('w-wind', Math.round(c.wind_speed_10m)+' km/h');
+  updateProfileDisplay();
+  updateRec(0);
+  renderForecast();
+  checkColdSnap();
+  renderProducts(null);
+  setTimeout(initCarouselArrows, 100);
+  updatePersonaliseBanner(); // Default: 7-day average
+  setTimeout(initCarouselArrows, 100);
+}
+
+function updateRec(dayIdx){
+  if(!wData) return;
+  const nt=wData.daily.temperature_2m_min[dayIdx];
+  const dt=wData.daily.temperature_2m_max[dayIdx];
+  const wind=wData.daily.wind_speed_10m_max?.[dayIdx]||0;
+  const rain=wData.daily.precipitation_probability_max?.[dayIdx]||0;
+  const nr=rugFromTemp(nt,profile,wind,rain);
+  const dr=rugFromTemp(dt,profile,wind,rain);
+  setText('rec-night-w',nr.w); setText('rec-night-n',nr.n);
+  setText('rec-day-w',dr.w); setText('rec-day-n',dr.n);
+  const t=Math.round(nt);
+  const isField=profile.living==='field'||profile.living==='both';
+  const windNote=wind>30?' Wind chill is a factor tonight.':'';
+  const rainNote=rain>50&&isField?' Rain likely — a waterproof turnout is essential.':'';
+  const msgs=[
+    [0,   `Freezing overnight at ${t}°C — maximum insulation needed for your horse.`],
+    [5,   `Cold tonight at ${t}°C — a heavyweight rug is the right call.`],
+    [10,  `Dropping to ${t}°C overnight — a medium weight rug should keep your horse comfortable.`],
+    [15,  `A mild ${t}°C tonight — a lightweight rug or none for an unclipped horse.`],
+    [Infinity, `At ${t}°C overnight, your unclipped horse should be comfortable without a rug.`]
+  ];
+  const msg=msgs.find(m=>nt<m[0]);
+  setText('w-reason', (msg?msg[1]:'')+windNote+rainNote);
+}
+
+function renderForecast(){
+  const d=wData.daily;
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const today=new Date();
+  let html='';
+  const total=Math.min(d.temperature_2m_min.length, 14);
+  for(let i=0;i<total;i++){
+    const date=new Date(today); date.setDate(today.getDate()+i);
+    const dayName=i===0?'Today':i===1?'Tmrw':days[date.getDay()];
+    const wind=wData.daily.wind_speed_10m_max?.[i]||0;
+    const rain=wData.daily.precipitation_probability_max?.[i]||0;
+    const nr=rugFromTemp(d.temperature_2m_min[i],profile,wind,rain);
+    const wi=wCode(d.weather_code[i]);
+    html+=`<div class="wf-item ${i===0?'active':''}" onclick="selectDay(${i},this)"><div class="wf-day">${dayName}</div><div class="wf-icon">${wi.i}</div><div class="wf-temp">${Math.round(d.temperature_2m_min[i])}–${Math.round(d.temperature_2m_max[i])}°</div><div class="wf-rug">${nr.w}</div></div>`;
+  }
+  document.getElementById('wf-row').innerHTML=html;
+}
+
+function selectDay(idx, el) {
+  selectedDay = idx;
+  document.querySelectorAll('.wf-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  updateRec(idx);
+  renderProducts(idx);
+  setTimeout(initCarouselArrows, 100);
+}
+
+function clearDaySelection() {
+  selectedDay = null;
+  document.querySelectorAll('.wf-item').forEach(i => i.classList.remove('active'));
+  renderProducts(null);
+  setTimeout(initCarouselArrows, 100);
+  updatePersonaliseBanner();
+}
+
+function checkColdSnap(){
+  if(!wData) return;
+  const d=wData.daily;
+  let coldDay=null;
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  for(let i=1;i<Math.min(d.temperature_2m_min.length,14);i++){
+    if(d.temperature_2m_min[i]<3){
+      const date=new Date(); date.setDate(date.getDate()+i);
+      coldDay={day:i===1?'tomorrow':days[date.getDay()],temp:Math.round(d.temperature_2m_min[i]),daysAway:i};
+      break;
+    }
+  }
+  const el=document.getElementById('coldsnap');
+  const text=document.getElementById('coldsnap-text');
+  if(coldDay){
+    const deliveryMsg = coldDay.daysAway<=3 ? 'Order today for delivery in time' : 'Plenty of time to order online';
+    text.innerHTML=`<strong>Cold snap coming ${coldDay.day} (${coldDay.temp}°C).</strong> ${deliveryMsg} — we've highlighted the right rugs below.`;
+    el.classList.add('show');
+  } else {
+    el.classList.remove('show');
+  }
+}
+
+// ============================================================
+// PRODUCTS
+// ============================================================
+const PRODUCTS=[
+  {id:1,retailer:'Robinsons Equestrian',name:'Horseware Amigo Bravo 12 Plus 300g Turnout',g:300,waterproof:true,neck:false,price:89.99,was:null,badge:'best',delivery:'📦 Order today — arrives in 2–3 days',icon:'🧣',color:'linear-gradient(135deg,#F5EDE0 0%,#EDD5B0 100%)',desc:'Fully waterproof 1200D outer with 300g fill. Ideal for cold, wet nights.'},
+  {id:2,retailer:'Naylors Equestrian',name:'Weatherbeeta ComFiTec Classic 300g Combo',g:300,waterproof:true,neck:true,price:74.99,was:99.99,badge:'sale',delivery:'📦 Order today — arrives in 2–3 days',icon:'🧣',color:'linear-gradient(135deg,#EAE8E0 0%,#D8D2C0 100%)',desc:'Fixed neck cover — excellent for heavy rain nights and field-kept horses.'},
+  {id:3,retailer:'Griggs Equestrian',name:'Shires Tempest Original 200g Turnout',g:200,waterproof:true,neck:false,price:59.99,was:null,badge:'day',delivery:'📦 Order today — arrives Wednesday',icon:'🧣',color:'linear-gradient(135deg,#E8EDE4 0%,#C8D8C0 100%)',desc:'A reliable medium weight — ideal as a daytime swap when temperatures rise.'},
+  {id:4,retailer:'Robinsons Equestrian',name:'Rhinegold Thor 300g Heavyweight Turnout',g:300,waterproof:true,neck:false,price:49.99,was:69.99,badge:'sale',delivery:'📦 Order today — arrives in 2–3 days',icon:'🧣',color:'linear-gradient(135deg,#E8E0D4 0%,#C8B898 100%)',desc:'Great value heavyweight — 600D outer with taped seams for wet weather.'},
+  {id:5,retailer:'Naylors Equestrian',name:'Horseware Amigo Hero 900D 300g Turnout',g:300,waterproof:true,neck:false,price:129.99,was:null,badge:null,delivery:'📦 Order today — arrives Thursday',icon:'🧣',color:'linear-gradient(135deg,#E4E8EE 0%,#B8C8D8 100%)',desc:'Extra durable 900D outer — for horses that are hard on rugs.'},
+  {id:6,retailer:'Griggs Equestrian',name:'Weatherbeeta Landa 200g Detach-A-Neck',g:200,waterproof:true,neck:true,price:84.99,was:null,badge:null,delivery:'📦 Order today — arrives in 2–3 days',icon:'🧣',color:'linear-gradient(135deg,#EDE8E0 0%,#D8C8B0 100%)',desc:'Flexible combo — attach the neck for cold nights, remove for milder days.'},
+  {id:7,retailer:'Robinsons Equestrian',name:'Horseware Rhino Wug 100g Turnout',g:100,waterproof:true,neck:false,price:69.99,was:null,badge:null,delivery:'📦 Order today — arrives Wednesday',icon:'🧣',color:'linear-gradient(135deg,#E8EDE6 0%,#C0D0B8 100%)',desc:'Lightweight wug cut — great for mild days and excellent shoulder freedom.'},
+  {id:8,retailer:'Naylors Equestrian',name:'Shires Highlander Original 400g Combo',g:400,waterproof:true,neck:true,price:89.99,was:119.99,badge:'sale',delivery:'📦 Order today — arrives Thursday',icon:'🧣',color:'linear-gradient(135deg,#EAE0D8 0%,#C8A888 100%)',desc:'Maximum warmth combo for freezing nights — essential for clipped horses.'},
+];
+
+let currentFilter='all';
+let currentSort='match';
+
+function filterBy(f,btn){
+  currentFilter=f;
+  document.querySelectorAll('.fchip').forEach(c=>c.classList.remove('on'));
+  btn.classList.add('on');
+  renderProducts(selectedDay);
+  setTimeout(initCarouselArrows, 100);
+}
+
+function sortProducts(val){
+  currentSort=val;
+  renderProducts(selectedDay);
+  setTimeout(initCarouselArrows, 100);
+}
+
+function renderProducts(dayIdx){
+  // If weather hasn't loaded yet, show all products with a neutral default (300g mid-weight)
+  if(!wData){
+    renderProductCards(PRODUCTS, 300);
+    return;
+  }
+
+  const using7Day = dayIdx === null;
+  let nightRec, dayRec, barTitle, barSub, fbClass, fbIcon, fbMsg;
+
+  if (using7Day) {
+    // DEFAULT: 7-day average mode
+    const avgTemp = get7DayAvgTemp();
+    const avgWind = wData.daily.wind_speed_10m_max?.slice(1,8).reduce((a,b)=>a+b,0)/7||0;
+    const avgRain = wData.daily.precipitation_probability_max?.slice(1,8).reduce((a,b)=>a+b,0)/7||0;
+    nightRec = rugFromTemp(avgTemp, profile, avgWind, avgRain);
+    dayRec = rugFromTemp(avgTemp + 4, profile, avgWind, avgRain);
+    barTitle = getActiveHorse() ? `Rugs matched for ${getActiveHorse().name}` : 'Rugs matched to your next 7 nights';
+    barSub = `${wData.locName} · avg ${Math.round(avgTemp)}°C overnight · ${profile.coat==='unclipped'?'Full coat':profile.coat+' clip'}`;
+
+    // Forward banner — look for upcoming cold snaps
+    const coldNight = wData.daily.temperature_2m_min.slice(1,8).reduce((min,t)=>t<min?t:min, 99);
+    const coldIdx = wData.daily.temperature_2m_min.slice(1,8).findIndex(t=>t===coldNight) + 1;
+    const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const coldDate = new Date(); coldDate.setDate(coldDate.getDate()+coldIdx);
+    const coldDayName = coldIdx===1?'tomorrow':days[coldDate.getDay()];
+
+    if (coldNight < 2) {
+      fbClass='fb-alert'; fbIcon='❄️';
+      const urgency = coldIdx <= 3 ? 'Order now to ensure delivery in time.' : 'You have time to order — delivery is usually 2–3 days.';
+      fbMsg=`<strong>Cold snap coming ${coldDayName} (${Math.round(coldNight)}°C).</strong> ${urgency} Rugs are sorted by best match for your coldest nights ahead.`;
+    } else if (avgTemp < 5) {
+      fbClass='fb-cold'; fbIcon='🧣';
+      fbMsg=`<strong>Cold week ahead — averaging ${Math.round(avgTemp)}°C overnight.</strong> These rugs are your best match for the next 7 nights. Tap any day in the forecast to see a specific night.`;
+    } else {
+      fbClass='fb-warm'; fbIcon='✅';
+      fbMsg=`<strong>Mild week ahead — averaging ${Math.round(avgTemp)}°C overnight.</strong> Rugs sorted by best match for your conditions. Tap any day in the forecast to plan ahead.`;
+    }
+  } else {
+    // OVERRIDE: specific day selected
+    const nt=wData.daily.temperature_2m_min[dayIdx];
+    const dt=wData.daily.temperature_2m_max[dayIdx];
+    const wind=wData.daily.wind_speed_10m_max?.[dayIdx]||0;
+    const rain=wData.daily.precipitation_probability_max?.[dayIdx]||0;
+    nightRec=rugFromTemp(nt,profile,wind,rain);
+    dayRec=rugFromTemp(dt,profile,wind,rain);
+    const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const date=new Date(); date.setDate(date.getDate()+dayIdx);
+    const dayName=dayIdx===1?'tomorrow night':days[date.getDay()]+' night';
+    barTitle=`Rugs matched for ${dayName}`;
+    barSub=`${wData.locName} · ${Math.round(nt)}°C overnight · tap another day or clear to reset`;
+
+    const daysAway=dayIdx;
+    if(nt<2){
+      fbClass='fb-alert'; fbIcon='❄️';
+      const orderMsg=daysAway<=3?'Order now to ensure it arrives in time.':'Plenty of time to order — delivery is usually 2–3 days.';
+      fbMsg=`<strong>Cold snap forecast ${dayName} at ${Math.round(nt)}°C.</strong> ${orderMsg}`;
+    } else if(rain>65){
+      fbClass='fb-cold'; fbIcon='🌧️';
+      fbMsg=`<strong>Heavy rain expected ${dayName}.</strong> We've prioritised fully waterproof rugs below.`;
+    } else {
+      fbClass='fb-warm'; fbIcon='✅';
+      fbMsg=`${dayName.charAt(0).toUpperCase()+dayName.slice(1)} looks manageable at ${Math.round(nt)}°C. <button onclick="clearDaySelection()" style="background:none;border:none;color:inherit;text-decoration:underline;cursor:pointer;font-family:inherit;font-size:inherit;">Clear selection</button> to see your 7-day average.`;
+    }
+  }
+
+  setText('ps-night-w', nightRec.w);
+  setText('ps-day-w', dayRec.w);
+  setText('ps-bar-title', barTitle);
+  setText('ps-bar-sub', barSub);
+
+  const fb=document.getElementById('forward-banner');
+  fb.style.display='flex';
+  fb.className='forward-banner '+fbClass;
+  document.getElementById('fb-icon').textContent=fbIcon;
+  document.getElementById('fb-text').innerHTML=fbMsg;
+
+  // Filter + sort
+  let filtered=[...PRODUCTS];
+  if(currentFilter==='300') filtered=filtered.filter(p=>p.g===300);
+  else if(currentFilter==='200') filtered=filtered.filter(p=>p.g===200);
+  else if(currentFilter==='neck') filtered=filtered.filter(p=>p.neck);
+
+  if(currentSort==='match') filtered.sort((a,b)=>Math.abs(a.g-nightRec.g)-Math.abs(b.g-nightRec.g));
+  else if(currentSort==='low') filtered.sort((a,b)=>a.price-b.price);
+  else if(currentSort==='high') filtered.sort((a,b)=>b.price-a.price);
+
+  renderProductCards(filtered, nightRec.g);
+}
+
+// Reusable card renderer — sorts by match to target weight and renders top 8
+function renderProductCards(list, targetWeight){
+  let arr = [...list];
+  if(currentFilter==='300') arr=arr.filter(p=>p.g===300);
+  else if(currentFilter==='200') arr=arr.filter(p=>p.g===200);
+  else if(currentFilter==='neck') arr=arr.filter(p=>p.neck);
+  if(currentSort==='match') arr.sort((a,b)=>Math.abs(a.g-targetWeight)-Math.abs(b.g-targetWeight));
+  else if(currentSort==='low') arr.sort((a,b)=>a.price-b.price);
+  else if(currentSort==='high') arr.sort((a,b)=>b.price-a.price);
+  const grid=document.getElementById('products-grid');
+  if(!grid) return;
+  grid.innerHTML=arr.slice(0,8).map(p=>{
+    const badgeHtml=p.badge==='best'?`<div class="pc-badge b-best">Best match</div>`:p.badge==='day'?`<div class="pc-badge b-day">Daytime pick</div>`:p.badge==='sale'?`<div class="pc-badge b-sale">Sale</div>`:'';
+    const wasHtml=p.was?`<span class="pc-was">£${p.was.toFixed(2)}</span>`:'';
+    return `<div class="product-card"><div class="pc-img" style="background:${p.color}">${p.icon}${badgeHtml}</div><div class="pc-body"><div class="pc-retailer">${p.retailer}</div><div class="pc-name">${p.name}</div><div class="pc-weight">✓ ${p.g}g · ${p.waterproof?'Waterproof':''}${p.neck?' · Neck cover':''}</div><div class="pc-desc">${p.desc}</div><div class="pc-delivery">${p.delivery}</div><div class="pc-footer"><div class="pc-price-wrap">${wasHtml}<div class="pc-price">£${p.price.toFixed(2)}</div></div><a class="btn-buy" href="#" onclick="return false;">View</a></div></div></div>`;
+  }).join('');
+}
+
+// ============================================================
+// ============================================================
+// SIZE GUIDE — SAVED HORSE SELECTOR
+// ============================================================
+
+function initSgHorseSelector() {
+  const group = document.getElementById('sg-saved-horses-group');
+  const select = document.getElementById('sg-horse-select');
+  if (!group || !select) return;
+
+  if (horses.length === 0) {
+    group.style.display = 'none';
+    return;
+  }
+
+  group.style.display = 'block';
+
+  // Populate dropdown
+  select.innerHTML = '<option value="">— Select a horse —</option>' +
+    horses.map(h => `<option value="${h.id}">${h.name}</option>`).join('') +
+    '<option value="new">+ Add a new horse</option>';
+
+  // Start with blank fields — don't auto pre-fill
+  select.value = '';
+  sgClearHorseFields();
+}
+
+function sgHandleHorseSelect(val) {
+  if (val === 'new') {
+    addHorseFromSwitcher();
+    document.getElementById('sg-horse-select').value = '';
+    sgClearHorseFields();
+    return;
+  }
+  if (!val) {
+    // No horse selected — clear all fields back to placeholder state
+    sgClearHorseFields();
+    return;
+  }
+  const horse = horses.find(h => h.id === parseInt(val));
+  if (horse) sgPreFillFromHorse(horse);
+}
+
+function sgClearHorseFields() {
+  const nameEl = document.getElementById('horse-name');
+  if (nameEl) nameEl.value = '';
+  const breedEl = document.getElementById('sg-breed');
+  if (breedEl) breedEl.value = '';
+  // Clear build chips
+  document.querySelectorAll('#sg-build-chips .m-chip').forEach(b => b.classList.remove('sel'));
+  // Clear step 2 state
+  sgState.clip = '';
+  sgState.stable = '';
+  sgState.feel = '';
+  document.querySelectorAll('#sg-clip-chips .m-chip, #sg-stable-chips .m-chip, #sg-feel-chips .m-chip')
+    .forEach(b => b.classList.remove('sel'));
+}
+
+function sgPreFillFromHorse(horse) {
+  // Pre-fill name
+  const nameEl = document.getElementById('horse-name');
+  if (nameEl) nameEl.value = horse.name || '';
+
+  // Pre-fill build
+  if (horse.build) {
+    sgState.build = horse.build;
+    document.querySelectorAll('#sg-build-chips .m-chip').forEach(b => {
+      const match = b.getAttribute('onclick').match(/'([^']+)',this/);
+      if (match) b.classList.toggle('sel', match[1] === horse.build);
+    });
+  }
+
+  // Pre-fill breed if it matches an option
+  const breedEl = document.getElementById('sg-breed');
+  if (breedEl && horse.breed) {
+    const opt = Array.from(breedEl.options).find(o =>
+      o.value.toLowerCase() === horse.breed.toLowerCase() ||
+      o.text.toLowerCase() === horse.breed.toLowerCase()
+    );
+    if (opt) breedEl.value = opt.value;
+  }
+
+  // Pre-fill conditions in step 2 from horse profile
+  // coat → clip
+  const clipMap = { unclipped:'unclipped', trace:'trace', hunter:'hunter' };
+  if (horse.coat && clipMap[horse.coat]) {
+    sgState.clip = clipMap[horse.coat];
+    // Update chips in step 2 if already rendered
+    document.querySelectorAll('#sg-clip-chips .m-chip').forEach(b => {
+      const match = b.getAttribute('onclick').match(/'([^']+)',this/);
+      if (match) b.classList.toggle('sel', match[1] === sgState.clip);
+    });
+  }
+
+  // living → stable
+  if (horse.living) {
+    sgState.stable = horse.living;
+    document.querySelectorAll('#sg-stable-chips .m-chip').forEach(b => {
+      const match = b.getAttribute('onclick').match(/'([^']+)',this/);
+      if (match) b.classList.toggle('sel', match[1] === sgState.stable);
+    });
+  }
+
+  // feel
+  if (horse.feel) {
+    sgState.feel = horse.feel;
+    document.querySelectorAll('#sg-feel-chips .m-chip').forEach(b => {
+      const match = b.getAttribute('onclick').match(/'([^']+)',this/);
+      if (match) b.classList.toggle('sel', match[1] === sgState.feel);
+    });
+  }
+}
+
+// ============================================================
+// SIZE GUIDE
+// ============================================================
+let sgState={name:'',breed:'',build:'',len:null,unit:'inches',weather:'',stable:'',clip:'',feel:''};
+
+function openSizeGuide(){ switchToSize(); }
+
+// Unit selection on step 1
+function sgSelUnit(unit, btn){
+  sgState.unit = unit;
+  btn.closest('.m-chips').querySelectorAll('.m-chip').forEach(c=>c.classList.remove('sel'));
+  btn.classList.add('sel');
+  const isInches = unit === 'inches';
+  document.getElementById('sg-length-label').textContent = isInches ? 'Measurement (inches)' : 'Measurement (centimetres)';
+  document.getElementById('sg-range-hint').textContent = isInches ? 'Typical range: 48–90 inches. If between sizes, always go up.' : 'Typical range: 120–230 cm. If between sizes, always go up.';
+  document.getElementById('sg-length').placeholder = isInches ? 'e.g. 72' : 'e.g. 135';
+  document.getElementById('sg-length').min = isInches ? 36 : 90;
+  document.getElementById('sg-length').max = isInches ? 96 : 250;
+  document.getElementById('sg-measure-tip-text').innerHTML = isInches
+    ? '<strong>UK method — chest to rump:</strong> Start at the <strong>centre of your horse\'s chest</strong>, run the tape horizontally along the side of the body, and stop at the <strong>centre of the rump</strong>. If between sizes, always go up.<br/><br/><strong>No tape measure?</strong> A piece of string works just as well — mark the length and measure with a ruler afterwards.'
+    : '<strong>European method — withers to tail:</strong> Start at the <strong>top of the withers</strong> (the bony ridge at the base of the neck), run along the back, and stop at the <strong>top of the tail</strong>. Measure in centimetres.<br/><br/><strong>Note:</strong> This is a shorter measurement than the UK method — don\'t compare the numbers between systems.';
+}
+
+// Chip selection for build, stable, clip, feel
+function sgChip(group, val, btn){
+  sgState[group] = val;
+  btn.closest('.m-chips').querySelectorAll('.m-chip').forEach(c=>c.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+function sgStep(n){
+  const current = getCurrentSgStep();
+  if(n > current && !validateSgStep(current)) return;
+  document.querySelectorAll('.step-card').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('.sdot').forEach((d,i)=>{
+    d.classList.remove('active','done');
+    if(i<n) d.classList.add('done');
+    if(i===n) d.classList.add('active');
+  });
+  document.getElementById('sg-step-'+n)?.classList.add('active');
+  document.getElementById('step-prog-fill').style.width=[0,33,66][n]+'%';
+  if(document.getElementById('horse-name')) sgState.name=document.getElementById('horse-name').value;
+  if(document.getElementById('sg-length')) sgState.len=parseFloat(document.getElementById('sg-length').value);
+  clearSgErrors();
+}
+
+function getCurrentSgStep(){
+  const cards=['sg-step-0','sg-step-1','sg-step-2'];
+  return cards.findIndex(id=>document.getElementById(id)?.classList.contains('active'));
+}
+
+function validateSgStep(stepIdx){
+  clearSgErrors();
+  if(stepIdx===0){
+    // Build is optional, all fine
+    return true;
+  }
+  if(stepIdx===1){
+    const len = document.getElementById('sg-length').value;
+    const isInches = sgState.unit === 'inches';
+    const min = isInches ? 36 : 90;
+    const max = isInches ? 96 : 250;
+    if(!len || isNaN(parseFloat(len)) || parseFloat(len)<min || parseFloat(len)>max){
+      showSgFieldError('sg-length', `Please enter a valid measurement (${min}–${max} ${isInches?'inches':'cm'})`);
+      return false;
+    }
+    sgState.len = parseFloat(len);
+    return true;
+  }
+  if(stepIdx===2){
+    let valid = true;
+    if(!sgState.weather){ showSgGroupError('sg-wg','Please select a temperature'); valid=false; }
+    if(!sgState.stable){ showSgGroupError('sg-stable-chips','Please select where your horse sleeps'); valid=false; }
+    if(!sgState.clip){ showSgGroupError('sg-clip-chips','Please select your horse\'s clip type'); valid=false; }
+    if(!sgState.feel){ showSgGroupError('sg-feel-chips','Please select how your horse tends to feel'); valid=false; }
+    return valid;
+  }
+  return true;
+}
+
+function showSgFieldError(fieldId, msg){
+  const field=document.getElementById(fieldId);
+  if(!field) return;
+  field.style.borderColor='#C0392B';
+  field.style.background='#FEF0EE';
+  const err=document.createElement('div');
+  err.className='sg-error-msg';
+  err.style.cssText='font-size:12px;color:#C0392B;margin-top:5px;display:flex;align-items:center;gap:4px;';
+  err.innerHTML='⚠️ '+msg;
+  field.parentNode.appendChild(err);
+  field.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function showSgGroupError(groupId, msg){
+  const group=document.getElementById(groupId);
+  if(!group) return;
+  const existing=group.parentNode.querySelector('.sg-error-msg[data-group="'+groupId+'"]');
+  if(existing) existing.remove();
+  const err=document.createElement('div');
+  err.className='sg-error-msg';
+  err.setAttribute('data-group',groupId);
+  err.style.cssText='font-size:12px;color:#C0392B;margin-top:6px;margin-bottom:4px;display:flex;align-items:center;gap:4px;';
+  err.innerHTML='⚠️ '+msg;
+  group.parentNode.insertBefore(err, group.nextSibling);
+  if(!document.querySelector('.sg-error-msg[data-scrolled]')){
+    err.setAttribute('data-scrolled','true');
+    err.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+}
+
+function clearSgErrors(){
+  document.querySelectorAll('.sg-error-msg').forEach(e=>e.remove());
+  const lenField=document.getElementById('sg-length');
+  if(lenField){lenField.style.borderColor='';lenField.style.background='';}
+}
+
+function sgSelW(val){
+  sgState.weather=val;
+  document.querySelectorAll('#sg-wg .w-opt').forEach(e=>e.classList.toggle('sel',e.dataset.v===val));
+}
+
+// Keep old sgTog for backwards compat (not used in new HTML but safe to keep)
+function sgTog(gid,val,btn){
+  document.querySelectorAll('#'+gid+' .tog').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+function calcSize(len, unit){
+  let inches = unit==='cm' ? (len/2.54)*1.4 : len;
+  const sizes=[48,51,54,57,60,63,66,69,72,75,78,81,84,87,90];
+  let c=sizes.reduce((p,v)=>Math.abs(v-inches)<Math.abs(p-inches)?v:p);
+  if(inches>c && sizes.indexOf(c)<sizes.length-1) c=sizes[sizes.indexOf(c)+1];
+  const f=Math.floor(c/12), r=c%12;
+  const euCm=Math.round(c*2.54/1.4);
+  return{in:c, dispUK:`${f}'${r===0?'0"':r+'"'}`, dispEU:`${euCm} cm`, unit};
+}
+
+function calcWt(){
+  const ww={freezing:400,cold:300,cool:200,mild:100,warm:0};
+  let g=ww[sgState.weather]||200;
+  if(sgState.clip==='hunter')g+=100; else if(sgState.clip==='trace')g+=50;
+  if(sgState.feel==='cold')g+=50; else if(sgState.feel==='warm')g-=50;
+  if(sgState.stable==='field')g+=50;
+  g=Math.max(0,Math.min(450,g));
+  const opts=[
+    {max:0,  p:{n:'No-fill / Fly rug',d:'No warmth needed at these temperatures.'},           a:{n:'100g Lightweight',d:'A thin fill for cool evenings.'}},
+    {max:100,p:{n:'100g Lightweight',d:'A thin fill for mild temperatures.'},                  a:{n:'200g Medium',d:'Step up if temperatures dip overnight.'}},
+    {max:200,p:{n:'200g Medium',d:'The most commonly used rug for UK autumn and spring.'},     a:{n:'300g Heavy',d:'Good to have for cold snaps.'}},
+    {max:300,p:{n:'300g Heavy',d:'Good warmth for cold, wet nights.'},                         a:{n:'200g + liner',d:'More flexibility — remove the liner as it warms.'}},
+    {max:999,p:{n:'400g Extra Heavy',d:'Maximum warmth for freezing temperatures.'},            a:{n:'300g + liner',d:'Layering gives flexibility as temperatures rise.'}}
+  ];
+  return opts.find(o=>g<=o.max);
+}
+
+function sgGenerate(){
+  sgState.name=document.getElementById('horse-name').value;
+  sgState.len=parseFloat(document.getElementById('sg-length').value);
+  if(!validateSgStep(2)) return;
+  clearSgErrors();
+  document.querySelectorAll('.step-card').forEach(c=>c.classList.remove('active'));
+  document.getElementById('sg-loading').classList.add('show');
+  document.getElementById('step-prog-fill').style.width='100%';
+  document.querySelectorAll('.sdot').forEach(d=>{d.classList.remove('active');d.classList.add('done');});
+  setTimeout(()=>{document.getElementById('sg-loading').classList.remove('show');sgShowResult();},1200);
+}
+
+function sgShowResult(){
+  const sz=calcSize(sgState.len, sgState.unit);
+  const wt=calcWt();
+  const name=sgState.name||'Your horse';
+  setText('sr-name',name.toUpperCase());
+  setText('sr-size',sz.dispUK);
+  const euNote = sgState.unit==='cm' ? ` · measured as ${sz.dispEU} (EU)` : ` · approx. ${sz.dispEU} EU equivalent`;
+  setText('sr-size-label',`UK rug size · ${sz.in}" equivalent${euNote}`);
+  document.getElementById('sr-wt-recs').innerHTML=`
+    <div class="sr-rec"><div class="sr-rec-top"><div class="sr-rec-name">${wt.p.n}</div><span class="sr-badge srb-p">Best match</span></div><div class="sr-rec-desc">${wt.p.d}</div></div>
+    <div class="sr-rec"><div class="sr-rec-top"><div class="sr-rec-name">${wt.a.n}</div><span class="sr-badge srb-a">Alternative</span></div><div class="sr-rec-desc">${wt.a.d}</div></div>
+  `;
+  const wa={
+    freezing:{i:'🧊',t:'Cold weather care',x:'Check warmth at the withers — warm but not sweating is the goal. Over-rugging is as harmful as under-rugging.'},
+    cold:{i:'❄️',t:'Winter rugging',x:'Waterproof turnout is essential for field-kept horses in wet cold weather. Check neck seals are secure.'},
+    cool:{i:'🌥️',t:'Autumn & spring',x:'A medium rug overnight that you remove during the day works well for transitional weather.'},
+    mild:{i:'🌤️',t:'Mild conditions',x:'Watch for sweating under rugs — a sign they\'re too warm. Unclipped horses may not need rugging at all.'},
+    warm:{i:'☀️',t:'Warm weather',x:'A fly rug or thin sheet may still be useful for sun and insect protection in summer months.'}
+  };
+  const ca={
+    hunter:{i:'✂️',t:'Clipped horse tip',x:'A fully clipped horse needs a heavier rug than an unclipped horse in the same conditions. Check warmth by hand daily.'},
+    trace:{i:'✂️',t:'Trace clip tip',x:'A trace clip retains some natural insulation — slightly more rug than unclipped, but less than a full clip.'},
+    unclipped:{i:'🐴',t:'Full winter coat',x:'In mild conditions an unclipped horse with a full winter coat may need no rug at all.'}
+  };
+  const w=wa[sgState.weather]||wa.cool, c=ca[sgState.clip]||ca.unclipped;
+  ['adv-1','adv-2'].forEach(id=>document.getElementById(id).classList.add('show'));
+  setText('adv-1-i',w.i); setText('adv-1-t',w.t); setText('adv-1-x',w.x);
+  setText('adv-2-i',c.i); setText('adv-2-t',c.t); setText('adv-2-x',c.x);
+  const bt=sgState.build==='chunky'?'Broad horses may need a "cob cut" rug — wider across the shoulders. Check the manufacturer\'s guide.':sgState.build==='fine'?'Fine-boned horses can have narrow shoulders — some rugs may gape at the withers. Check fit carefully.':'Standard sizing should suit an average build, but always check shoulder and neck fit with a new brand.';
+  document.getElementById('tips-list').innerHTML=[
+    bt,
+    'Rug sizes vary between brands — always check the manufacturer\'s size guide rather than assuming your size transfers.',
+    'A correct fit: sits just behind the withers at the front, covers to the top of the tail, and allows 2–3 fingers of room at the chest.',
+    'If between two sizes, always go up — a slightly loose rug is safer than one that pulls across the shoulders.',
+    'For turnout rugs, look for 600D or higher denier for horses that roll or live out in all weathers.',
+    'Always use the hand test — slide your hand under the rug at the withers. Warm but not sweaty is the goal.',
+  ].map(t=>`<div class="tip-row"><span class="tip-arrow">→</span><span>${t}</span></div>`).join('');
+  document.getElementById('size-result').classList.add('show');
+  document.getElementById('tips-card').classList.add('show');
+  document.getElementById('restart-row').classList.add('show');
+}
+
+function sgRestart(){
+  ['size-result','adv-1','adv-2','tips-card','restart-row'].forEach(id=>document.getElementById(id).classList.remove('show'));
+  document.getElementById('step-prog-fill').style.width='0%';
+  document.querySelectorAll('.sdot').forEach((d,i)=>{d.classList.remove('active','done');if(i===0)d.classList.add('active');});
+  if(document.getElementById('horse-name')) document.getElementById('horse-name').value='';
+  if(document.getElementById('sg-length')) document.getElementById('sg-length').value='';
+  document.querySelectorAll('.w-opt').forEach(e=>e.classList.remove('sel'));
+  document.querySelectorAll('#sg-build-chips .m-chip,#sg-stable-chips .m-chip,#sg-clip-chips .m-chip,#sg-feel-chips .m-chip').forEach(e=>e.classList.remove('sel'));
+  // Reset unit to inches
+  document.querySelectorAll('#sg-unit-chips .m-chip').forEach(e=>e.classList.remove('sel'));
+  document.querySelector('#sg-unit-chips .m-chip').classList.add('sel');
+  sgState={name:'',breed:'',build:'',len:null,unit:'inches',weather:'',stable:'',clip:'',feel:''};
+  document.getElementById('sg-step-0').classList.add('active');
+  clearSgErrors();
+  initSgHorseSelector();
+}
+
+
+// ============================================================
+// UTILS
+// ============================================================
+async function handleSignup(e){
+  e.preventDefault();
+  const email = document.getElementById('email-input').value;
+  if(!email||!email.includes('@')){ alert('Please enter a valid email address.'); return; }
+  try {
+    const formData = new FormData(document.getElementById('signup-form'));
+    await fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(formData).toString()
+    });
+    // Hide form, show success
+    document.getElementById('signup-form').style.display = 'none';
+    document.getElementById('signup-success').style.display = 'block';
+  } catch(err) {
+    // Fallback — show success anyway (Netlify may still have captured it)
+    document.getElementById('signup-form').style.display = 'none';
+    document.getElementById('signup-success').style.display = 'block';
+  }
+}
+// ===== TAB SWITCHING =====
+function switchTab(tab, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+function switchToSize() {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-size').classList.add('active');
+  document.querySelectorAll('.tab-nav-btn')[1].classList.add('active');
+  initSgHorseSelector();
+  setTimeout(()=>document.getElementById('size-guide-section').scrollIntoView({behavior:'smooth'}),200);
+}
+function scrollToProducts(){document.getElementById('products').scrollIntoView({behavior:'smooth'});}
+function scrollToTop(){document.getElementById('home').scrollIntoView({behavior:'smooth'});}
+function openShopPage(){ window.location.href='https://flourishing-eclair-e8edf1.netlify.app/shop'; }
+function showEl(id){const el=document.getElementById(id);if(el)el.style.display='block';}
+function hideEl(id){const el=document.getElementById(id);if(el)el.style.display='none';}
+function setText(id,val){const el=document.getElementById(id);if(el)el.textContent=val;}
+
+// INIT — DEMO MODE (no location needed)
+window.addEventListener('error', function(e) { console.warn('SteedSize caught error:', e.message); return true; });
+window.addEventListener('unhandledrejection', function(e) { console.warn('SteedSize caught promise rejection:', e.reason); e.preventDefault(); });
+
+const hasProfile = loadFromStorage();
+
+// Show welcome modal on first visit OR if no horses have been added yet
+const _visited = localStorage.getItem('steedsize_visited');
+const _shouldShowModal = !_visited || horses.length === 0;
+if (_shouldShowModal) {
+  localStorage.setItem('steedsize_visited', '1');
+  setTimeout(function() {
+    showModalScreen('ms-welcome');
+    document.getElementById('profile-overlay').classList.remove('hidden');
+  }, 400);
+}
+updateNavDisplay();
+updatePersonaliseBanner();
+
+// Show product carousel immediately with default products (before weather loads)
+renderProducts(null);
+setTimeout(initCarouselArrows, 150);
+
+// Live weather — auto-request on load
+requestLocation();
+checkColdSnap();
+
+
+
+
+
+
+function scrollCarousel(dir) {
+  const grid = document.getElementById('products-grid');
+  if (!grid) return;
+  grid.scrollBy({ left: dir * 260, behavior: 'smooth' });
+  setTimeout(updateCarouselArrows, 350);
+}
+
+function updateCarouselArrows() {
+  const grid = document.getElementById('products-grid');
+  const left = document.getElementById('carousel-left');
+  const right = document.getElementById('carousel-right');
+  if (!grid || !left || !right) return;
+  left.classList.toggle('hidden', grid.scrollLeft <= 10);
+  right.classList.toggle('hidden', grid.scrollLeft + grid.clientWidth >= grid.scrollWidth - 10);
+}
+
+// Wire up scroll listener once products render
+function initCarouselArrows() {
+  const grid = document.getElementById('products-grid');
+  if (!grid) return;
+  grid.addEventListener('scroll', updateCarouselArrows);
+  updateCarouselArrows();
+}
+
+
+function updatePersonaliseBanner() {
+  const banner = document.getElementById('personalise-banner');
+  const btn = document.getElementById('ps-bar-edit-btn');
+  const hasHorse = horses.length > 0;
+  if (banner) {
+    if (hasHorse) banner.classList.remove('visible');
+    else banner.classList.add('visible');
+  }
+  if (btn) {
+    btn.textContent = hasHorse ? '← Edit profile' : '← Add your horse';
+  }
+}
+
+
+function toggleHamburger() {
+  const btn = document.getElementById('hamburger-btn');
+  const menu = document.getElementById('mobile-menu');
+  if (!btn || !menu) return;
+  btn.classList.toggle('open');
+  menu.classList.toggle('open');
+}
+function closeMobileMenu() {
+  const btn = document.getElementById('hamburger-btn');
+  const menu = document.getElementById('mobile-menu');
+  if (btn) btn.classList.remove('open');
+  if (menu) menu.classList.remove('open');
+}
+// Close mobile menu on outside click
+document.addEventListener('click', function(e) {
+  const btn = document.getElementById('hamburger-btn');
+  const menu = document.getElementById('mobile-menu');
+  if (btn && menu && !btn.contains(e.target) && !menu.contains(e.target)) {
+    closeMobileMenu();
+  }
+});
+
+</script>
+
+</body>
+</html>

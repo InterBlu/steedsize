@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SteedSize — Blog Blog</title>
+<meta name="description" content="Equestrian insights, rug guides and horse care advice from the SteedSize team.">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:#F5F0E8; --warm-white:#FAF8F4;
+  --bark:#6B4F3A; --bark-light:#8B6B52; --bark-light-aa:#7A5535;
+  --mud:#3D2E1E; --gold:#C4923A; --gold-pale:#F5E6CC;
+  --mist:#B8C4BE; --sage:#7A8C6E; --sage-pale:#E8EDE4;
+  --alert:#A0422A;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--mud);}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(61,46,30,0.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);}
+.nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;cursor:pointer;position:relative;z-index:110;}
+.nav-logo-mark{width:26px;height:26px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.nav-logo-text{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--cream);font-weight:600;letter-spacing:0.02em;}
+.nav-logo-text span{color:var(--gold);font-style:italic;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-links{display:flex;gap:20px;align-items:center;}
+.nav-links a{font-size:13px;color:var(--mist);text-decoration:none;transition:color 0.2s;}
+.nav-links a:hover{color:var(--cream);}
+.profile-pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);border-radius:20px;padding:5px 12px;cursor:pointer;transition:all 0.2s;}
+.profile-pill:hover{background:rgba(255,255,255,0.14);}
+.pp-icon{font-size:14px;}
+.pp-name{font-size:12px;color:var(--cream);font-weight:500;}
+.pp-edit{font-size:10px;color:var(--mist);margin-left:2px;}
+@media(max-width:580px){.nav-links{display:none;}}
+
+/* BLOG HEADER */
+.blog-header{background:var(--mud);padding:88px 20px 48px;position:relative;overflow:hidden;}
+.blog-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 90% 20%,rgba(107,79,58,0.5) 0%,transparent 60%),radial-gradient(ellipse 40% 50% at 10% 80%,rgba(122,140,110,0.12) 0%,transparent 55%);pointer-events:none;}
+.blog-header-inner{max-width:760px;margin:0 auto;position:relative;z-index:1;}
+.blog-tag{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.blog-tag::before{content:'';width:24px;height:1px;background:var(--gold);}
+.blog-h1{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,6vw,60px);color:var(--cream);line-height:1.05;margin-bottom:12px;font-weight:500;}
+.blog-h1 em{color:var(--gold);font-style:italic;}
+.blog-header-sub{font-size:15px;color:var(--mist);font-weight:300;line-height:1.7;max-width:480px;}
+
+/* CATEGORY FILTER */
+.category-bar{background:var(--warm-white);border-bottom:1px solid rgba(107,79,58,0.1);padding:0 20px;position:sticky;top:56px;z-index:50;}
+.category-bar-inner{max-width:760px;margin:0 auto;display:flex;gap:0;overflow-x:auto;scrollbar-width:none;}
+.category-bar-inner::-webkit-scrollbar{display:none;}
+.cat-btn{padding:14px 18px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;color:var(--bark-light-aa);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:all 0.2s;}
+.cat-btn:hover{color:var(--mud);}
+.cat-btn.active{color:var(--mud);border-bottom-color:var(--gold);font-weight:600;}
+
+/* BLOG BODY */
+.blog-body{max-width:760px;margin:0 auto;padding:40px 20px 60px;}
+
+/* FEATURED POST */
+.featured-post{background:var(--mud);border-radius:20px;overflow:hidden;margin-bottom:40px;cursor:pointer;transition:transform 0.2s;text-decoration:none;display:block;}
+.featured-post:hover{transform:translateY(-3px);}
+.featured-img{height:220px;background:linear-gradient(135deg,#4A3828 0%,#2A1E0E 100%);display:flex;align-items:center;justify-content:center;font-size:64px;position:relative;overflow:hidden;}
+.featured-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(61,46,30,0.7));}
+.featured-label{position:absolute;top:16px;left:16px;background:var(--gold);color:var(--mud);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:4px 12px;border-radius:50px;z-index:1;}
+.featured-body{padding:24px 26px 26px;}
+.featured-cat{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold);margin-bottom:8px;}
+.featured-title{font-family:'Cormorant Garamond',serif;font-size:clamp(22px,4vw,30px);color:var(--cream);line-height:1.2;margin-bottom:10px;font-weight:500;}
+.featured-excerpt{font-size:13px;color:var(--mist);line-height:1.7;font-weight:300;margin-bottom:16px;}
+.featured-meta{display:flex;align-items:center;gap:12px;}
+.meta-author{font-size:12px;color:rgba(184,196,190,0.8);}
+.meta-dot{width:3px;height:3px;background:rgba(184,196,190,0.4);border-radius:50%;}
+.meta-date{font-size:12px;color:rgba(184,196,190,0.6);}
+.meta-read{font-size:12px;color:rgba(184,196,190,0.6);}
+
+/* POST GRID */
+.post-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:40px;}
+.post-card{background:var(--warm-white);border-radius:14px;overflow:hidden;border:1px solid rgba(107,79,58,0.1);cursor:pointer;transition:all 0.25s;text-decoration:none;display:flex;flex-direction:column;}
+.post-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(61,46,30,0.1);border-color:rgba(107,79,58,0.2);}
+.post-img{height:130px;display:flex;align-items:center;justify-content:center;font-size:40px;position:relative;}
+.post-body{padding:14px 16px 16px;flex:1;display:flex;flex-direction:column;}
+.post-cat{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--bark-light-aa);margin-bottom:5px;}
+.post-title{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--mud);line-height:1.3;margin-bottom:6px;font-weight:500;flex:1;}
+.post-excerpt{font-size:11px;color:var(--bark-light);line-height:1.6;font-weight:300;margin-bottom:10px;}
+.post-meta{font-size:10px;color:var(--mist);display:flex;align-items:center;gap:6px;}
+
+/* FULL WIDTH POST */
+.post-full{background:var(--warm-white);border-radius:14px;overflow:hidden;border:1px solid rgba(107,79,58,0.1);margin-bottom:20px;cursor:pointer;transition:all 0.25s;text-decoration:none;display:flex;gap:0;}
+.post-full:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(61,46,30,0.08);}
+.post-full-img{width:120px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:36px;}
+.post-full-body{padding:16px 18px;flex:1;}
+.post-full-title{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--mud);line-height:1.3;margin-bottom:5px;font-weight:500;}
+.post-full-excerpt{font-size:12px;color:var(--bark-light);line-height:1.6;font-weight:300;margin-bottom:8px;}
+
+/* NEWSLETTER STRIP */
+.newsletter-strip{background:var(--mud);border-radius:16px;padding:28px 28px;margin-bottom:40px;text-align:center;}
+.newsletter-strip h3{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--cream);margin-bottom:6px;font-weight:500;}
+.newsletter-strip h3 em{color:var(--gold);font-style:italic;}
+.newsletter-strip p{font-size:13px;color:var(--mist);margin-bottom:18px;font-weight:300;}
+.newsletter-form{display:flex;flex-direction:column;gap:10px;max-width:340px;margin:0 auto;}
+.newsletter-input{width:100%;padding:11px 16px;border:none;border-radius:50px;font-family:'Outfit',sans-serif;font-size:16px;background:rgba(255,255,255,0.1);color:var(--cream);border:1px solid rgba(255,255,255,0.15);}
+.newsletter-input::placeholder{color:rgba(184,196,190,0.5);}
+.newsletter-btn{background:transparent;color:var(--cream);border:2px solid rgba(196,146,58,0.6);padding:11px 24px;border-radius:50px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.newsletter-btn:hover{border-color:var(--gold);background:rgba(196,146,58,0.12);}
+.newsletter-note{font-size:11px;color:rgba(184,196,190,0.7);margin-top:6px;}
+
+/* TOPIC TAGS */
+.topics-section{margin-bottom:40px;}
+.topics-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--bark-light-aa);margin-bottom:12px;}
+.topics-chips{display:flex;flex-wrap:wrap;gap:8px;}
+.topic-chip{padding:6px 14px;border:1.5px solid rgba(107,79,58,0.18);border-radius:50px;font-size:12px;color:var(--bark);background:var(--warm-white);text-decoration:none;transition:all 0.2s;font-family:'Outfit',sans-serif;}
+.topic-chip:hover{background:var(--gold-pale);border-color:var(--gold);color:var(--bark);}
+
+/* FOOTER */
+footer{background:var(--mud);padding:24px 20px;border-top:1px solid rgba(255,255,255,0.06);}
+.footer-inner{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--cream);font-weight:600;}
+.footer-logo span{color:var(--gold);font-style:italic;}
+.footer-links{display:flex;gap:16px;}
+.footer-links a{font-size:12px;color:var(--mist);text-decoration:none;transition:color 0.2s;}
+.footer-links a:hover{color:var(--cream);}
+.footer-copy{font-size:11px;color:rgba(184,196,190,0.4);}
+.footer-disc{width:100%;font-size:11px;color:rgba(184,196,190,0.85);line-height:1.6;padding-top:13px;border-top:1px solid rgba(255,255,255,0.06);margin-top:8px;}
+
+/* COMING SOON BADGE */
+.coming-soon{display:inline-flex;align-items:center;gap:5px;background:var(--sage-pale);color:#4A6B42;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;padding:3px 10px;border-radius:50px;margin-bottom:20px;}
+
+@media(max-width:500px){
+  .post-grid{grid-template-columns:1fr;}
+  .post-full{flex-direction:column;}
+  .post-full-img{width:100%;height:100px;}
+}
+
+/* HAMBURGER MENU */
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;margin-left:8px;z-index:101;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--cream);border-radius:2px;transition:all 0.3s;}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mobile-menu{display:none;position:fixed;top:56px;left:0;right:0;background:rgba(61,46,30,0.98);backdrop-filter:blur(16px);padding:16px 20px 20px;z-index:99;border-bottom:1px solid rgba(255,255,255,0.08);flex-direction:column;gap:0;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-size:15px;color:var(--mist);text-decoration:none;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);transition:color 0.2s;font-family:'Outfit',sans-serif;}
+.mobile-menu a:last-child{border-bottom:none;}
+.mobile-menu a:hover{color:var(--cream);}
+@media(max-width:580px){
+  .hamburger{display:flex;}
+  .nav-links{display:none !important;}
+}
+
+</style>
+</head>
+<body>
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="https://flourishing-eclair-e8edf1.netlify.app">
+    <div class="nav-logo-text">Steed<span>Size</span></div>
+  </a>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/#home">Home</a>
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/about">About</a>
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/blog">Blog</a>
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/shop">Shop</a>
+    </div>
+    <a class="profile-pill" href="https://flourishing-eclair-e8edf1.netlify.app" style="text-decoration:none;">
+      <span class="pp-icon">🐴</span>
+      <span class="pp-name" id="pp-name">My horses</span>
+    </a>
+    <button class="hamburger" id="hamburger-btn" onclick="toggleHamburger()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="https://flourishing-eclair-e8edf1.netlify.app/#home" onclick="closeMobileMenu()">Home</a>
+  <a href="https://flourishing-eclair-e8edf1.netlify.app/about" onclick="closeMobileMenu()">About</a>
+  <a href="https://flourishing-eclair-e8edf1.netlify.app/blog" onclick="closeMobileMenu()">Blog</a>
+  <a href="https://flourishing-eclair-e8edf1.netlify.app/shop" onclick="closeMobileMenu()">Shop</a>
+</div>
+
+
+
+
+
+
+
+
+<!-- HEADER -->
+<div class="blog-header">
+  <div class="blog-header-inner">
+    <div class="blog-tag">Blog</div>
+    <h1 class="blog-h1">Insights for <em>every equestrian</em></h1>
+    <p class="blog-header-sub">Rug guides, seasonal advice and horse care tips — written for real horse owners, not textbooks.</p>
+  </div>
+</div>
+
+<!-- CATEGORY FILTER -->
+<div class="category-bar">
+  <div class="category-bar-inner">
+    <button class="cat-btn active" onclick="filterCat('all',this)">All posts</button>
+    <button class="cat-btn" onclick="filterCat('rugging',this)">Rugging</button>
+    <button class="cat-btn" onclick="filterCat('fitting',this)">Fitting & sizing</button>
+    <button class="cat-btn" onclick="filterCat('seasonal',this)">Seasonal</button>
+    <button class="cat-btn" onclick="filterCat('care',this)">Horse care</button>
+    <button class="cat-btn" onclick="filterCat('buying',this)">Buying guides</button>
+  </div>
+</div>
+
+<!-- BLOG BODY -->
+<div class="blog-body">
+
+  <!-- FEATURED: Rug Weights (Rugging category) -->
+  <a class="featured-post" href="steedsize-blog-rug-weights.html" data-cat="rugging">
+    <div class="featured-img">
+      🧣
+      <div class="featured-label">Featured</div>
+    </div>
+    <div class="featured-body">
+      <div class="featured-cat">Rugging</div>
+      <div class="featured-title">What Rug Fill Weight Actually Means — And How to Choose the Right One</div>
+      <div class="featured-excerpt">100g, 200g, 300g — but what does rug fill weight actually mean? We break it down so you can stop guessing and start choosing with confidence.</div>
+      <div class="featured-meta">
+        <span class="meta-author">Francesca</span>
+        <span class="meta-dot"></span>
+        <span class="meta-date">May 2025</span>
+        <span class="meta-dot"></span>
+        <span class="meta-read">8 min read</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- POST GRID — 2 remaining posts -->
+  <div class="post-grid" id="post-grid">
+
+    <a class="post-card" href="steedsize-blog-autumn-rugging.html" data-cat="seasonal">
+      <div class="post-img" style="background:linear-gradient(135deg,#EAE8E0,#D8C4A0);">🍂</div>
+      <div class="post-body">
+        <div class="post-cat">Seasonal</div>
+        <div class="post-title">The Autumn Rugging Dilemma: When to Start and How to Layer</div>
+        <div class="post-excerpt">Autumn is the trickiest rugging season. Temperature swings, coat transition, the pressure to make the right call every morning.</div>
+        <div class="post-meta"><span>May 2025</span><span>·</span><span>7 min</span></div>
+      </div>
+    </a>
+
+    <a class="post-card" href="steedsize-blog-measuring.html" data-cat="fitting">
+      <div class="post-img" style="background:linear-gradient(135deg,#E8EDE4,#C8D8C0);">📏</div>
+      <div class="post-body">
+        <div class="post-cat">Fitting & sizing</div>
+        <div class="post-title">How to Measure Your Horse for a Rug — And What to Do With the Number</div>
+        <div class="post-excerpt">Most horse owners measure incorrectly and end up with a rug that doesn't fit. Here's the right way to do it.</div>
+        <div class="post-meta"><span>May 2025</span><span>·</span><span>6 min</span></div>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- NEWSLETTER STRIP -->
+  <div class="newsletter-strip">
+    <h3>Be part of <em>the herd</em></h3>
+    <p>Get equestrian tips, seasonal rug guides and product advice. Free, always.</p>
+    <div class="newsletter-form">
+      <input class="newsletter-input" type="email" placeholder="Your email address"/>
+      <button class="newsletter-btn">Subscribe</button>
+      <div class="newsletter-note">No spam, ever. Unsubscribe any time.</div>
+    </div>
+  </div>
+
+  <!-- TOPICS -->
+  <div class="topics-section">
+    <div class="topics-label">Browse by topic</div>
+    <div class="topics-chips">
+      <a class="topic-chip" href="#" onclick="filterCat('rugging',document.querySelector('[onclick*=rugging]'));return false;">Rugging</a>
+      <a class="topic-chip" href="#" onclick="return false;">Rug weights</a>
+      <a class="topic-chip" href="#" onclick="return false;">Turnout rugs</a>
+      <a class="topic-chip" href="#" onclick="filterCat('fitting',document.querySelector('[onclick*=fitting]'));return false;">Fitting & sizing</a>
+      <a class="topic-chip" href="#" onclick="filterCat('seasonal',document.querySelector('[onclick*=seasonal]'));return false;">Seasonal advice</a>
+      <a class="topic-chip" href="#" onclick="return false;">Autumn rugging</a>
+      <a class="topic-chip" href="#" onclick="return false;">Clipping</a>
+      <a class="topic-chip" href="#" onclick="return false;">Layering</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/#home">Home</a>
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/about">About</a>
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/blog">Blog</a>
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/shop">Shop</a>
+    </div>
+    <div class="footer-copy">© 2026 SteedSize</div>
+    <div class="footer-disc">SteedSize recommendations are based on widely used equestrian guidelines and are provided as general guidance only. They do not constitute professional veterinary or equestrian advice. Always use your own judgement and consult a qualified professional if you have any concerns about your horse's welfare.</div>
+  </div>
+</footer>
+
+<script>
+function filterCat(cat, btn) {
+  // Update active tab
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  // Filter grid cards
+  document.querySelectorAll('#post-grid .post-card, .post-full').forEach(card => {
+    const cardCat = card.dataset.cat;
+    const show = cat === 'all' || cardCat === cat;
+    card.style.display = show ? '' : 'none';
+  });
+
+  // Update grid columns if only 1 card visible
+  const visible = document.querySelectorAll('#post-grid .post-card:not([style*="none"])');
+  document.getElementById('post-grid').style.gridTemplateColumns = visible.length === 1 ? '1fr' : '';
+}
+

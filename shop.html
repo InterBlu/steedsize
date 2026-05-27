@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SteedSize — Browse Rugs</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:#F5F0E8; --warm-white:#FAF8F4;
+  --bark:#6B4F3A; --bark-light:#8B6B52; --bark-light-aa:#7A5535;
+  --sage:#7A8C6E; --sage-pale:#E8EDE4;
+  --mud:#3D2E1E; --gold:#C4923A; --gold-pale:#F5E6CC;
+  --mist:#B8C4BE; --sky-aa:#2A6E8A; --frost-pale:#EEF4F8;
+  --alert:#A0422A; --alert-pale:#FAE8E0;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--mud);min-height:100vh;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(61,46,30,0.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);}
+.nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;cursor:pointer;position:relative;z-index:110;}
+.nav-logo-mark{width:26px;height:26px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.nav-logo-text{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--cream);font-weight:600;letter-spacing:0.02em;}
+.nav-logo-text span{color:var(--gold);font-style:italic;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-links{display:flex;gap:20px;align-items:center;}
+.nav-links a{font-size:13px;color:var(--mist);text-decoration:none;transition:color 0.2s;}
+.nav-links a:hover{color:var(--cream);}
+.profile-pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);border-radius:20px;padding:5px 12px;cursor:pointer;transition:all 0.2s;}
+.profile-pill:hover{background:rgba(255,255,255,0.14);}
+.pp-icon{font-size:14px;}
+.pp-name{font-size:12px;color:var(--cream);font-weight:500;}
+.pp-edit{font-size:10px;color:var(--mist);margin-left:2px;}
+@media(max-width:580px){.nav-links{display:none;}}
+
+/* SHOP HEADER */
+.shop-header{background:var(--mud);padding:80px 20px 32px;position:relative;overflow:hidden;}
+.shop-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 85% 10%,rgba(107,79,58,0.4) 0%,transparent 60%);pointer-events:none;}
+.shop-header-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.shop-tag{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.shop-tag::before{content:'';width:24px;height:1px;background:var(--gold);}
+.shop-h1{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,5vw,52px);color:var(--cream);line-height:1.05;margin-bottom:8px;font-weight:500;}
+.shop-h1 em{color:var(--gold);font-style:italic;}
+.shop-sub{font-size:15px;color:var(--mist);font-weight:300;line-height:1.6;max-width:500px;}
+
+/* REC BANNER */
+.rec-banner{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin-top:20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;backdrop-filter:blur(10px);}
+.rec-pill{border-radius:8px;padding:6px 12px;text-align:center;display:flex;align-items:center;gap:6px;}
+.rec-pill-n{background:rgba(196,146,58,0.2);border:1px solid rgba(196,146,58,0.3);}
+.rec-pill-d{background:rgba(122,140,110,0.15);border:1px solid rgba(122,140,110,0.25);}
+.rec-pill-label{font-size:9px;text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap;}
+.rec-pill-n .rec-pill-label{color:rgba(196,146,58,0.8);}
+.rec-pill-d .rec-pill-label{color:rgba(164,181,149,0.9);}
+.rec-pill-val{font-family:'Cormorant Garamond',serif;font-size:18px;line-height:1;}
+.rec-pill-n .rec-pill-val{color:var(--gold);}
+.rec-pill-d .rec-pill-val{color:var(--sage);}
+.rec-banner-text{flex:1;}
+.rec-banner-title{font-size:13px;color:var(--cream);font-weight:500;margin-bottom:1px;}
+.rec-banner-sub{font-size:11px;color:var(--mist);font-weight:300;}
+
+/* LAYOUT TOGGLE */
+.shop-body{max-width:900px;margin:0 auto;padding:28px 20px 60px;}
+.filter-row-unified{display:flex;flex-direction:column;gap:14px;margin-bottom:14px;}
+.filter-group{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;}
+.filter-group .filter-section-label{padding-top:6px;min-width:60px;}
+
+/* FILTERS */
+.filter-bar{background:var(--warm-white);border-radius:14px;padding:16px 18px;margin-bottom:24px;border:1px solid rgba(107,79,58,0.1);}
+.filter-bar-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+.filter-section-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--bark-light-aa);min-width:40px;}
+.filter-chips{display:flex;gap:6px;flex-wrap:wrap;flex:1;}
+.fchip{padding:5px 13px;border:1.5px solid rgba(107,79,58,0.18);border-radius:50px;font-size:12px;color:var(--bark);background:white;cursor:pointer;transition:all 0.2s;font-family:'Outfit',sans-serif;}
+.fchip:hover{border-color:var(--bark);}
+.fchip.on{background:var(--mud);color:var(--cream);border-color:var(--mud);}
+.filter-bar-bottom{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding-top:12px;border-top:1px solid rgba(107,79,58,0.08);}
+.results-count{font-size:12px;color:var(--bark-light-aa);}
+.sort-select{padding:5px 13px;border:1.5px solid rgba(107,79,58,0.18);border-radius:50px;font-size:12px;color:var(--bark);background:white;cursor:pointer;font-family:'Outfit',sans-serif;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236B4F3A' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;}
+
+/* RECOMMENDED WEIGHT CHIP HIGHLIGHT */
+.fchip.recommended{border-color:var(--gold);color:var(--gold);font-weight:600;}
+.fchip.recommended::after{content:' ✓';font-size:10px;}
+.products-grid-full{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+
+/* SHARED PRODUCT CARD */
+.product-card{background:var(--warm-white);border-radius:14px;border:1px solid rgba(107,79,58,0.1);overflow:hidden;transition:all 0.25s;display:flex;flex-direction:column;}
+.product-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(61,46,30,0.12);border-color:rgba(107,79,58,0.18);}
+
+.pc-img{height:150px;display:flex;align-items:center;justify-content:center;font-size:48px;position:relative;overflow:hidden;}
+.pc-img::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 80% at 50% 120%,rgba(107,79,58,0.12) 0%,transparent 70%);}
+.pc-badge{position:absolute;top:10px;left:10px;font-size:10px;font-weight:600;padding:4px 10px;border-radius:50px;text-transform:uppercase;letter-spacing:0.04em;z-index:1;}
+.b-best{background:var(--gold-pale);color:var(--gold);}
+.b-day{background:var(--sage-pale);color:#4A6B42;}
+.b-sale{background:#FAE8E4;color:#7A2E1A;}
+.pc-body{padding:13px 15px;flex:1;display:flex;flex-direction:column;}
+.pc-retailer{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--bark-light-aa);margin-bottom:4px;}
+.pc-name{font-size:13px;font-weight:600;color:var(--mud);margin-bottom:3px;line-height:1.35;}
+.pc-weight{font-size:11px;color:#4A6B42;margin-bottom:4px;font-weight:500;}
+.pc-desc{font-size:12px;color:var(--bark-light);line-height:1.5;font-weight:300;flex:1;margin-bottom:10px;}
+.pc-delivery{font-size:11px;color:var(--sky-aa);font-weight:500;margin-bottom:8px;}
+.pc-footer{display:flex;align-items:center;justify-content:space-between;gap:6px;}
+.pc-price-wrap{display:flex;flex-direction:column;justify-content:center;}
+.pc-price{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--mud);font-weight:600;line-height:1;}
+.pc-was{font-size:11px;color:var(--mist);text-decoration:line-through;font-family:'Outfit',sans-serif;font-weight:300;display:block;margin-bottom:2px;}
+.btn-buy{background:var(--mud);color:var(--cream);font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;padding:7px 14px;border-radius:50px;border:none;cursor:pointer;transition:all 0.2s;}
+.btn-buy:hover{background:var(--bark);}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:48px 20px;color:var(--bark-light-aa);}
+.empty-state-icon{font-size:40px;margin-bottom:12px;}
+.empty-state-text{font-size:14px;}
+
+/* AFF NOTE */
+.aff-note{font-size:11px;color:var(--bark-light-aa);display:flex;align-items:center;gap:5px;margin-top:24px;}
+.aff-dot{width:4px;height:4px;background:var(--bark-light-aa);border-radius:50%;flex-shrink:0;}
+
+@media(max-width:500px){
+  .products-grid-full{grid-template-columns:1fr 1fr;}
+
+}
+@media(max-width:340px){.products-grid-full{grid-template-columns:1fr;}}
+
+footer{background:var(--mud);padding:24px 20px;border-top:1px solid rgba(255,255,255,0.06);}
+.footer-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--cream);font-weight:600;letter-spacing:0.02em;}
+.footer-logo span{color:var(--gold);font-style:italic;}
+.footer-links{display:flex;gap:16px;}
+.footer-links a{font-size:12px;color:var(--mist);text-decoration:none;transition:color 0.2s;}
+.footer-links a:hover{color:var(--cream);}
+.footer-copy{font-size:11px;color:rgba(184,196,190,0.4);}
+.footer-disc{width:100%;font-size:11px;color:rgba(184,196,190,0.85);line-height:1.6;padding-top:13px;border-top:1px solid rgba(255,255,255,0.06);margin-top:8px;}
+
+/* HAMBURGER MENU */
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;margin-left:8px;z-index:101;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--cream);border-radius:2px;transition:all 0.3s;}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mobile-menu{display:none;position:fixed;top:56px;left:0;right:0;background:rgba(61,46,30,0.98);backdrop-filter:blur(16px);padding:16px 20px 20px;z-index:99;border-bottom:1px solid rgba(255,255,255,0.08);flex-direction:column;gap:0;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-size:15px;color:var(--mist);text-decoration:none;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);transition:color 0.2s;font-family:'Outfit',sans-serif;}
+.mobile-menu a:last-child{border-bottom:none;}
+.mobile-menu a:hover{color:var(--cream);}
+@media(max-width:580px){
+  .hamburger{display:flex;}
+  .nav-links{display:none !important;}
+}
+
+</style>
+</head>
+<body>
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="https://flourishing-eclair-e8edf1.netlify.app">
+    <div class="nav-logo-text">Steed<span>Size</span></div>
+  </a>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/#home">Home</a>
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/about">About</a>
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/blog">Blog</a>
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/shop">Shop</a>
+    </div>
+    <a class="profile-pill" href="https://flourishing-eclair-e8edf1.netlify.app" style="text-decoration:none;">
+      <span class="pp-icon">🐴</span>
+      <span class="pp-name" id="pp-name">My horses</span>
+    </a>
+    <button class="hamburger" id="hamburger-btn" onclick="toggleHamburger()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="https://flourishing-eclair-e8edf1.netlify.app/#home" onclick="closeMobileMenu()">Home</a>
+  <a href="https://flourishing-eclair-e8edf1.netlify.app/about" onclick="closeMobileMenu()">About</a>
+  <a href="https://flourishing-eclair-e8edf1.netlify.app/blog" onclick="closeMobileMenu()">Blog</a>
+  <a href="https://flourishing-eclair-e8edf1.netlify.app/shop" onclick="closeMobileMenu()">Shop</a>
+</div>
+
+
+
+
+
+
+
+
+<!-- SHOP HEADER -->
+<div class="shop-header">
+  <div class="shop-header-inner">
+    <div class="shop-tag">Rug shop</div>
+    <h1 class="shop-h1">Browse <em>all rugs</em></h1>
+    <p class="shop-sub">Every rug below is matched to your horse's profile. Sorted by best fit for your next 7 nights — tap any day in the forecast to refine.</p>
+
+    <!-- Rec banner showing tonight/daytime recommendation -->
+    <div class="rec-banner">
+      <div class="rec-pill rec-pill-n">
+        <div class="rec-pill-label">7-night avg</div>
+        <div class="rec-pill-val" id="rec-tonight">300g</div>
+      </div>
+      <div class="rec-pill rec-pill-d">
+        <div class="rec-pill-label">Daytime</div>
+        <div class="rec-pill-val" id="rec-daytime">200g</div>
+      </div>
+      <div class="rec-banner-text">
+        <div class="rec-banner-title">Next 7 nights avg · 3°C · Newmarket, Suffolk</div>
+        <div class="rec-banner-sub">Biscuit · Full coat · Stabled · Average</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SHOP BODY -->
+<div class="shop-body">
+
+  <!-- UNIFIED FILTER BAR -->
+  <div class="filter-bar">
+    <div class="filter-row-unified">
+      <div class="filter-group">
+        <span class="filter-section-label">Weight</span>
+        <div class="filter-chips" id="weight-filters">
+          <button class="fchip on" onclick="filterWeight('all',this)">All</button>
+          <button class="fchip" id="chip-100" onclick="filterWeight('100',this)">100g</button>
+          <button class="fchip" id="chip-200" onclick="filterWeight('200',this)">200g</button>
+          <button class="fchip" id="chip-300" onclick="filterWeight('300',this)">300g</button>
+          <button class="fchip" id="chip-400" onclick="filterWeight('400',this)">400g</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-section-label">Features</span>
+        <div class="filter-chips" id="type-filters">
+          <button class="fchip on" onclick="filterType('all',this)">All</button>
+          <button class="fchip" onclick="filterType('neck',this)">Neck cover</button>
+          <button class="fchip" onclick="filterType('waterproof',this)">Waterproof</button>
+        </div>
+      </div>
+    </div>
+    <div class="filter-bar-bottom">
+      <span class="results-count" id="results-count">8 rugs</span>
+      <select class="sort-select" onchange="sortBy(this.value)">
+        <option value="match">Best match</option>
+        <option value="low">Price: low to high</option>
+        <option value="high">Price: high to low</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- GRID -->
+  <div class="products-grid-full" id="grid-products"></div>
+
+  <div class="aff-note">
+    <div class="aff-dot"></div>
+    SteedSize may earn a small commission on purchases via these links — at no extra cost to you.
+  </div>
+
+</div>
+
+<script>
+// ── PRODUCT DATA ──────────────────────────────────────────────
+const PRODUCTS = [
+  {id:1,retailer:'Robinsons Equestrian',name:'Horseware Amigo Bravo 12 Plus 300g Turnout',g:300,waterproof:true,neck:false,price:89.99,was:null,badge:'best',delivery:'📦 Arrives in 2–3 days',icon:'🧣',color:'linear-gradient(135deg,#F5EDE0 0%,#EDD5B0 100%)',desc:'Fully waterproof 1200D outer with 300g fill. Ideal for cold, wet nights.'},
+  {id:2,retailer:'Naylors Equestrian',name:'Weatherbeeta ComFiTec Classic 300g Combo',g:300,waterproof:true,neck:true,price:74.99,was:99.99,badge:'sale',delivery:'📦 Arrives in 2–3 days',icon:'🧣',color:'linear-gradient(135deg,#EAE8E0 0%,#D8D2C0 100%)',desc:'Fixed neck cover — excellent for heavy rain nights and field-kept horses.'},
+  {id:3,retailer:'Griggs Equestrian',name:'Shires Tempest Original 200g Turnout',g:200,waterproof:true,neck:false,price:59.99,was:null,badge:'day',delivery:'📦 Arrives Wednesday',icon:'🧣',color:'linear-gradient(135deg,#E8EDE4 0%,#C8D8C0 100%)',desc:'A reliable medium weight — ideal as a daytime swap when temperatures rise.'},
+  {id:4,retailer:'Robinsons Equestrian',name:'Rhinegold Thor 300g Heavyweight Turnout',g:300,waterproof:true,neck:false,price:49.99,was:69.99,badge:'sale',delivery:'📦 Arrives in 2–3 days',icon:'🧣',color:'linear-gradient(135deg,#E8E0D4 0%,#C8B898 100%)',desc:'Great value heavyweight — 600D outer with taped seams for wet weather.'},
+  {id:5,retailer:'Naylors Equestrian',name:'Horseware Amigo Hero 900D 300g Turnout',g:300,waterproof:true,neck:false,price:129.99,was:null,badge:null,delivery:'📦 Arrives Thursday',icon:'🧣',color:'linear-gradient(135deg,#E4E8EE 0%,#B8C8D8 100%)',desc:'Extra durable 900D outer — for horses that are hard on rugs.'},
+  {id:6,retailer:'Griggs Equestrian',name:'Weatherbeeta Landa 200g Detach-A-Neck',g:200,waterproof:true,neck:true,price:84.99,was:null,badge:null,delivery:'📦 Arrives in 2–3 days',icon:'🧣',color:'linear-gradient(135deg,#EDE8E0 0%,#D8C8B0 100%)',desc:'Flexible combo — attach the neck for cold nights, remove for milder days.'},
+  {id:7,retailer:'Robinsons Equestrian',name:'Horseware Rhino Wug 100g Turnout',g:100,waterproof:true,neck:false,price:69.99,was:null,badge:null,delivery:'📦 Arrives Wednesday',icon:'🧣',color:'linear-gradient(135deg,#E8EDE6 0%,#C0D0B8 100%)',desc:'Lightweight wug cut — great for mild days and excellent shoulder freedom.'},
+  {id:8,retailer:'Naylors Equestrian',name:'Shires Highlander Original 400g Combo',g:400,waterproof:true,neck:true,price:89.99,was:119.99,badge:'sale',delivery:'📦 Arrives Thursday',icon:'🧣',color:'linear-gradient(135deg,#EAE0D8 0%,#C8A888 100%)',desc:'Maximum warmth combo for freezing nights — essential for clipped horses.'},
+];
+
+// ── STATE ─────────────────────────────────────────────────────
+let currentWeight = 'all';
+let currentType = 'all';
+let currentSort = 'match';
+
+// 7-day average temperature for demo (avg of next 7 nights in Newmarket)
+const AVG_7DAY_TEMP = 3; // °C — drives default sort
+const AVG_7DAY_REC = 300; // g — best match for 3°C average
+
+// ── FILTER & SORT ─────────────────────────────────────────────
+function getFiltered() {
+  let p = [...PRODUCTS];
+  if (currentWeight !== 'all') p = p.filter(x => x.g === parseInt(currentWeight));
+  if (currentType === 'neck') p = p.filter(x => x.neck);
+  if (currentType === 'waterproof') p = p.filter(x => x.waterproof);
+  if (currentSort === 'match') p.sort((a,b) => Math.abs(a.g-AVG_7DAY_REC) - Math.abs(b.g-AVG_7DAY_REC));
+  if (currentSort === 'low') p.sort((a,b) => a.price - b.price);
+  if (currentSort === 'high') p.sort((a,b) => b.price - a.price);
+  return p;
+}
+
+function filterWeight(val, btn) {
+  currentWeight = val;
+  document.querySelectorAll('#weight-filters .fchip').forEach(c=>c.classList.remove('on'));
+  btn.classList.add('on');
+  render();
+}
+
+function filterType(val, btn) {
+  currentType = val;
+  document.querySelectorAll('#type-filters .fchip').forEach(c=>c.classList.remove('on'));
+  btn.classList.add('on');
+  render();
+}
+
+function sortBy(val) { currentSort = val; render(); }
+
+// Highlight recommended weight chip
+function highlightRecommended() {
+  const recG = AVG_7DAY_REC;
+  document.querySelectorAll('#weight-filters .fchip').forEach(btn => {
+    btn.classList.remove('recommended');
+  });
+  const recChip = document.getElementById('chip-' + recG);
+  if (recChip && currentWeight === 'all') recChip.classList.add('recommended');
+}
+
+// ── CARD HTML ─────────────────────────────────────────────────
+function cardHTML(p) {
+  const wasHtml = p.was ? `<span class="pc-was">£${p.was.toFixed(2)}</span>` : '';
+  const badgeHtml = p.badge==='best'?`<div class="pc-badge b-best">Best match</div>`:p.badge==='day'?`<div class="pc-badge b-day">Daytime pick</div>`:p.badge==='sale'?`<div class="pc-badge b-sale">Sale</div>`:'';
+  return `<div class="product-card">
+    <div class="pc-img" style="background:${p.color}">${p.icon}${badgeHtml}</div>
+    <div class="pc-body">
+      <div class="pc-retailer">${p.retailer}</div>
+      <div class="pc-name">${p.name}</div>
+      <div class="pc-weight">✓ ${p.g}g · ${p.waterproof?'Waterproof':''}${p.neck?' · Neck cover':''}</div>
+      <div class="pc-desc">${p.desc}</div>
+      <div class="pc-delivery">${p.delivery}</div>
+      <div class="pc-footer">
+        <div class="pc-price-wrap">${wasHtml}<div class="pc-price">£${p.price.toFixed(2)}</div></div>
+        <button class="btn-buy" onclick="return false;">View</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── RENDER ────────────────────────────────────────────────────
+function render() {
+  const filtered = getFiltered();
+  document.getElementById('results-count').textContent = `${filtered.length} rug${filtered.length !== 1 ? 's' : ''}`;
+  highlightRecommended();
+  const grid = document.getElementById('grid-products');
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon">🔍</div><div class="empty-state-text">No rugs match your current filters.</div></div>`;
+  } else {
+    grid.innerHTML = filtered.map(cardHTML).join('');
+  }
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+render();
+

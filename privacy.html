@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SteedSize — Privacy Policy</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:#F5F0E8; --warm-white:#FAF8F4;
+  --bark:#6B4F3A; --bark-light:#8B6B52; --bark-light-aa:#7A5535;
+  --mud:#3D2E1E; --gold:#C4923A; --gold-pale:#F5E6CC;
+  --mist:#B8C4BE; --sage-pale:#E8EDE4;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--mud);}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(61,46,30,0.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);}
+.nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;cursor:pointer;position:relative;z-index:110;}
+.nav-logo-mark{width:26px;height:26px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.nav-logo-text{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--cream);font-weight:600;letter-spacing:0.02em;}
+.nav-logo-text span{color:var(--gold);font-style:italic;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-links{display:flex;gap:20px;align-items:center;}
+.nav-links a{font-size:13px;color:var(--mist);text-decoration:none;transition:color 0.2s;}
+.nav-links a:hover{color:var(--cream);}
+.profile-pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);border-radius:20px;padding:5px 12px;cursor:pointer;transition:all 0.2s;}
+.profile-pill:hover{background:rgba(255,255,255,0.14);}
+.pp-icon{font-size:14px;}
+.pp-name{font-size:12px;color:var(--cream);font-weight:500;}
+.pp-edit{font-size:10px;color:var(--mist);margin-left:2px;}
+@media(max-width:580px){.nav-links{display:none;}}
+
+/* HERO */
+.policy-hero{background:var(--mud);padding:88px 20px 40px;position:relative;overflow:hidden;}
+.policy-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 90% 20%,rgba(107,79,58,0.4) 0%,transparent 60%);pointer-events:none;}
+.policy-hero-inner{max-width:680px;margin:0 auto;position:relative;z-index:1;}
+.policy-tag{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.policy-tag::before{content:'';width:24px;height:1px;background:var(--gold);}
+.policy-h1{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,5vw,48px);color:var(--cream);line-height:1.1;margin-bottom:12px;font-weight:500;}
+.policy-updated{font-size:12px;color:var(--mist);font-weight:300;}
+
+/* BODY */
+.policy-body{max-width:680px;margin:0 auto;padding:48px 20px 80px;}
+
+/* PLAIN ENGLISH SUMMARY */
+.summary-box{background:var(--mud);border-radius:16px;padding:28px;margin-bottom:40px;}
+.summary-box h2{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--cream);font-weight:500;margin-bottom:16px;}
+.summary-box h2 em{color:var(--gold);font-style:italic;}
+.summary-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.summary-list li{font-size:14px;color:var(--mist);line-height:1.6;font-weight:300;display:flex;gap:10px;}
+.summary-list li::before{content:'✓';color:var(--gold);font-weight:600;flex-shrink:0;margin-top:1px;}
+
+/* SECTIONS */
+.policy-section{margin-bottom:36px;padding-bottom:36px;border-bottom:1px solid rgba(107,79,58,0.12);}
+.policy-section:last-of-type{border-bottom:none;}
+.section-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.14em;color:var(--gold);margin-bottom:6px;}
+.section-h{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--mud);font-weight:500;margin-bottom:14px;line-height:1.2;}
+.section-p{font-size:14px;color:var(--bark);line-height:1.85;font-weight:300;margin-bottom:12px;}
+.section-p:last-child{margin-bottom:0;}
+.section-p strong{color:var(--mud);font-weight:600;}
+.section-p a{color:var(--bark);font-weight:500;}
+
+/* INFO CHIPS */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0;}
+.info-card{background:var(--warm-white);border-radius:12px;padding:16px;border:1px solid rgba(107,79,58,0.1);}
+.info-card-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--bark-light-aa);margin-bottom:5px;}
+.info-card-val{font-size:13px;color:var(--mud);line-height:1.5;font-weight:400;}
+
+/* CONTACT BOX */
+.contact-box{background:var(--sage-pale);border-radius:14px;padding:24px;margin-top:40px;border:1px solid rgba(122,140,110,0.2);}
+.contact-box h3{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--mud);margin-bottom:8px;font-weight:500;}
+.contact-box p{font-size:14px;color:var(--bark);line-height:1.7;font-weight:300;}
+.contact-box a{color:var(--bark);font-weight:600;}
+
+/* FOOTER */
+footer{background:var(--mud);padding:24px 20px;border-top:1px solid rgba(255,255,255,0.06);}
+.footer-inner{max-width:680px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--cream);font-weight:600;}
+.footer-logo span{color:var(--gold);font-style:italic;}
+.footer-links{display:flex;gap:16px;}
+.footer-links a{font-size:12px;color:var(--mist);text-decoration:none;transition:color 0.2s;}
+.footer-links a:hover{color:var(--cream);}
+.footer-copy{font-size:11px;color:rgba(184,196,190,0.4);}
+
+@media(max-width:500px){.info-grid{grid-template-columns:1fr;}}
+
+@media(prefers-color-scheme:dark){
+  body{background:var(--cream) !important;}
+  .policy-hero{background:var(--mud) !important;}
+  .policy-h1{color:var(--cream) !important;}
+  .policy-updated{color:var(--mist) !important;}
+  .policy-body{background:var(--cream) !important;}
+  .section-h{color:var(--mud) !important;}
+  .section-p{color:var(--bark) !important;}
+  .section-p strong{color:var(--mud) !important;}
+  .section-p a{color:var(--bark) !important;}
+  .section-num{color:var(--gold) !important;}
+  .info-card{background:var(--warm-white) !important;}
+  .info-card-label{color:var(--bark-light-aa) !important;}
+  .info-card-val{color:var(--mud) !important;}
+  .contact-box{background:var(--sage-pale) !important;}
+  .contact-box h3{color:var(--mud) !important;}
+  .contact-box p{color:var(--bark) !important;}
+  .contact-box a{color:var(--bark) !important;}
+  .summary-list li{color:var(--mist) !important;}
+  .policy-tag{color:var(--gold) !important;}
+}
+
+
+/* HAMBURGER MENU */
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;margin-left:8px;z-index:101;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--cream);border-radius:2px;transition:all 0.3s;}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mobile-menu{display:none;position:fixed;top:56px;left:0;right:0;background:rgba(61,46,30,0.98);backdrop-filter:blur(16px);padding:16px 20px 20px;z-index:99;border-bottom:1px solid rgba(255,255,255,0.08);flex-direction:column;gap:0;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-size:15px;color:var(--mist);text-decoration:none;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);transition:color 0.2s;font-family:'Outfit',sans-serif;}
+.mobile-menu a:last-child{border-bottom:none;}
+.mobile-menu a:hover{color:var(--cream);}
+@media(max-width:580px){
+  .hamburger{display:flex;}
+  .nav-links{display:none !important;}
+}
+
+</style>
+</head>
+<body>
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="https://flourishing-eclair-e8edf1.netlify.app">
+    <div class="nav-logo-text">Steed<span>Size</span></div>
+  </a>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/#home">Home</a>
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/about">About</a>
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/blog">Blog</a>
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/shop">Shop</a>
+    </div>
+    <a class="profile-pill" href="https://flourishing-eclair-e8edf1.netlify.app" style="text-decoration:none;">
+      <span class="pp-icon">🐴</span>
+      <span class="pp-name" id="pp-name">My horses</span>
+    </a>
+    <button class="hamburger" id="hamburger-btn" onclick="toggleHamburger()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="https://flourishing-eclair-e8edf1.netlify.app/#home" onclick="closeMobileMenu()">Home</a>
+  <a href="https://flourishing-eclair-e8edf1.netlify.app/about" onclick="closeMobileMenu()">About</a>
+  <a href="https://flourishing-eclair-e8edf1.netlify.app/blog" onclick="closeMobileMenu()">Blog</a>
+  <a href="https://flourishing-eclair-e8edf1.netlify.app/shop" onclick="closeMobileMenu()">Shop</a>
+</div>
+
+
+
+
+
+
+
+
+<!-- HERO -->
+<div class="policy-hero">
+  <div class="policy-hero-inner">
+    <div class="policy-tag">Legal</div>
+    <h1 class="policy-h1">Privacy Policy</h1>
+    <p class="policy-updated">Last updated: May 2025 · Written in plain English</p>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="policy-body">
+
+  <!-- PLAIN ENGLISH SUMMARY -->
+  <div class="summary-box">
+    <h2>The short version — <em>plain English</em></h2>
+    <ul class="summary-list">
+      <li>We use your location to show you local weather — we never store it</li>
+      <li>Your horse profiles are saved on your device only, not on our servers</li>
+      <li>We don't use cookies or tracking right now</li>
+      <li>We don't sell your data — ever</li>
+      <li>If you click a product link, we may earn a small affiliate commission at no cost to you</li>
+      <li>You can delete your horse profiles any time by clearing your browser data</li>
+    </ul>
+  </div>
+
+  <!-- 1. WHO WE ARE -->
+  <div class="policy-section">
+    <div class="section-num">01</div>
+    <h2 class="section-h">Who we are</h2>
+    <p class="section-p">SteedSize is a free equestrian tool that helps horse owners choose the right rug weight and size based on local weather conditions and their horse's individual profile. SteedSize is operated by Francesca, based in the UK.</p>
+    <p class="section-p">If you have any questions about this policy, please get in touch at <a href="mailto:francesca@steedsize.co.uk">francesca@steedsize.co.uk</a></p>
+  </div>
+
+  <!-- 2. WHAT DATA WE USE -->
+  <div class="policy-section">
+    <div class="section-num">02</div>
+    <h2 class="section-h">What data we use — and why</h2>
+    <p class="section-p">We keep things simple. Here's exactly what SteedSize uses:</p>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-card-label">📍 Your location</div>
+        <div class="info-card-val">Used to fetch local weather via Open-Meteo. Never stored on our servers. Only used in the moment you request it.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-label">🐴 Your horse profiles</div>
+        <div class="info-card-val">Saved on your device using browser localStorage. We never see this data — it stays on your phone or computer.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-label">🌤️ Weather data</div>
+        <div class="info-card-val">Fetched from Open-Meteo (open-meteo.com), a free weather API. No personal data is sent to them beyond your coordinates.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-label">🍪 Cookies</div>
+        <div class="info-card-val">We don't currently use any cookies or third-party tracking tools. If this changes, we'll update this policy and add a cookie notice.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. AFFILIATE LINKS -->
+  <div class="policy-section">
+    <div class="section-num">03</div>
+    <h2 class="section-h">Affiliate links & how we make money</h2>
+    <p class="section-p">SteedSize is free to use. To keep it that way, product links on the site may be affiliate links — meaning if you click through and make a purchase, we may earn a small commission from the retailer.</p>
+    <p class="section-p"><strong>This costs you nothing extra.</strong> The price you pay is exactly the same whether you come through SteedSize or go directly to the retailer.</p>
+    <p class="section-p">We only recommend products we'd genuinely consider for our own horses. Affiliate relationships never influence our rug weight recommendations — those are based purely on weather data and your horse's profile.</p>
+  </div>
+
+  <!-- 4. THIRD PARTY SERVICES -->
+  <div class="policy-section">
+    <div class="section-num">04</div>
+    <h2 class="section-h">Third party services we use</h2>
+    <p class="section-p"><strong>Open-Meteo</strong> (open-meteo.com) — provides our weather data. When you request a weather check, your approximate coordinates are sent to Open-Meteo to retrieve your local forecast. Open-Meteo is a privacy-friendly, open-source weather API that does not store personal data.</p>
+    <p class="section-p"><strong>Nominatim / OpenStreetMap</strong> — used to convert your coordinates into a place name (e.g. "Newmarket, Suffolk"). Again, no personal data is stored by this service.</p>
+    <p class="section-p"><strong>Google Fonts</strong> — used to load our fonts. Google may log a request when the fonts load. See Google's privacy policy for details.</p>
+  </div>
+
+  <!-- 5. YOUR RIGHTS -->
+  <div class="policy-section">
+    <div class="section-num">05</div>
+    <h2 class="section-h">Your rights</h2>
+    <p class="section-p">Because we don't collect or store your personal data on our servers, there's very little for us to share or delete. However, under UK GDPR you have the right to:</p>
+    <p class="section-p">
+      <strong>Access your data</strong> — ask us what data we hold (the honest answer is: almost none)<br><br>
+      <strong>Delete your horse profiles</strong> — clear your browser's localStorage at any time to remove all saved horse data from your device<br><br>
+      <strong>Opt out of location access</strong> — deny location permission in your browser and enter your location manually instead<br><br>
+      <strong>Contact us</strong> — with any privacy concerns at <a href="mailto:francesca@steedsize.co.uk">francesca@steedsize.co.uk</a>
+    </p>
+  </div>
+
+  <!-- 6. CHILDREN -->
+  <div class="policy-section">
+    <div class="section-num">06</div>
+    <h2 class="section-h">Young users</h2>
+    <p class="section-p">SteedSize is designed for horse owners of all ages. We do not knowingly collect personal data from anyone. As no data is stored on our servers, SteedSize is safe for young riders to use — though we'd always encourage younger users to have a parent or guardian nearby when using any online tool.</p>
+  </div>
+
+  <!-- 7. CHANGES -->
+  <div class="policy-section">
+    <div class="section-num">07</div>
+    <h2 class="section-h">Changes to this policy</h2>
+    <p class="section-p">If we add new features — such as analytics, newsletter signups, or a user account system — we'll update this policy before those features go live and add any required notices (such as a cookie banner) at that point.</p>
+    <p class="section-p">The "last updated" date at the top of this page will always reflect the most recent version.</p>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="contact-box">
+    <h3>Questions about this policy?</h3>
+    <p>We're happy to explain anything in plain English. Drop us a line at <a href="mailto:francesca@steedsize.co.uk">francesca@steedsize.co.uk</a> and we'll get back to you as soon as we can.</p>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/#home">Home</a>
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/about">About</a>
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/blog">Blog</a>
+      <a href="https://flourishing-eclair-e8edf1.netlify.app/shop">Shop</a>
+    </div>
+    <div class="footer-copy">© 2026 SteedSize</div>
+    <div class="footer-disc">SteedSize recommendations are based on widely used equestrian guidelines and are provided as general guidance only. They do not constitute professional veterinary or equestrian advice. Always use your own judgement and consult a qualified professional if you have any concerns about your horse's welfare.</div>
+  </div>
+</footer>
+
+<script>
