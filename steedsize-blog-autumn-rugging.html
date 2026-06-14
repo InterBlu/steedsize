@@ -747,3 +747,37 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(61,46,30,0.9
 </footer>
 
 <script>
+function toggleHamburger() {
+  const btn = document.getElementById('hamburger-btn');
+  const menu = document.getElementById('mobile-menu');
+  if (!btn || !menu) return;
+  btn.classList.toggle('open');
+  menu.classList.toggle('open');
+}
+function closeMobileMenu() {
+  const btn = document.getElementById('hamburger-btn');
+  const menu = document.getElementById('mobile-menu');
+  if (btn) btn.classList.remove('open');
+  if (menu) menu.classList.remove('open');
+}
+document.addEventListener('click', function(e) {
+  const btn = document.getElementById('hamburger-btn');
+  const menu = document.getElementById('mobile-menu');
+  if (btn && menu && !btn.contains(e.target) && !menu.contains(e.target)) {
+    closeMobileMenu();
+  }
+});
+
+(function() {
+  try {
+    var horses = JSON.parse(localStorage.getItem('steedsize_horses') || '[]');
+    var activeId = parseInt(localStorage.getItem('steedsize_active'));
+    var active = horses.find(function(h) { return h.id === activeId; });
+    var el = document.getElementById('pp-name');
+    if (el && active) el.textContent = active.name;
+    else if (el && horses.length > 0) el.textContent = horses[0].name;
+  } catch(e) {}
+})();
+</script>
+</body>
+</html>
