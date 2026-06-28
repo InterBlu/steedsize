@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>SteedSize — Horse Profile</title>
+<meta name="description" content="Build a profile for your horse — discipline, personality, photos and more.">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:#F5F0E8; --warm-white:#FAF8F4;
+  --bark:#6B4F3A; --bark-light:#8B6B52; --bark-light-aa:#7A5535;
+  --mud:#3D2E1E; --gold:#C4923A; --gold-pale:#F5E6CC;
+  --mist:#B8C4BE; --sage:#7A8C6E; --sage-pale:#E8EDE4;
+  --line:rgba(107,79,58,0.14);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--mud);padding-top:56px;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(61,46,30,0.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);}
+.nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;cursor:pointer;position:relative;z-index:110;}
+.nav-logo-text{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--cream);font-weight:600;letter-spacing:0.02em;}
+.nav-logo-text span{color:var(--gold);font-style:italic;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-links{display:flex;gap:20px;align-items:center;}
+.nav-links a{font-size:13px;color:var(--mist);text-decoration:none;transition:color 0.2s;}
+.nav-links a:hover{color:var(--cream);}
+.nav-links a.active{color:var(--cream);}
+.profile-pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);border-radius:20px;padding:5px 12px;cursor:pointer;transition:all 0.2s;text-decoration:none;}
+.profile-pill:hover{background:rgba(255,255,255,0.14);}
+.pp-name{font-size:12.5px;color:var(--cream);font-weight:500;}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;margin-left:8px;z-index:101;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--cream);border-radius:2px;transition:all 0.3s;}
+.mobile-menu{display:none;position:fixed;top:56px;left:0;right:0;background:rgba(61,46,30,0.98);backdrop-filter:blur(16px);padding:16px 20px 20px;z-index:99;border-bottom:1px solid rgba(255,255,255,0.08);flex-direction:column;gap:0;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-size:15px;color:var(--mist);text-decoration:none;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);transition:color 0.2s;}
+.mobile-menu a:last-child{border-bottom:none;}
+@media(max-width:580px){.hamburger{display:flex;}.nav-links{display:none !important;}}
+
+/* PAGE */
+.wrap{max-width:760px;margin:0 auto;padding:28px 20px 60px;}
+.eyebrow{font-family:'Outfit',sans-serif;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:var(--gold);margin-bottom:8px;}
+.page-h{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:34px;line-height:1.1;color:var(--mud);margin-bottom:6px;}
+.page-h em{font-style:italic;color:var(--gold);}
+.page-sub{font-size:14px;color:var(--bark);line-height:1.55;max-width:540px;}
+
+/* HORSE SWITCHER */
+.switcher{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 6px;align-items:center;}
+.switch-chip{background:var(--warm-white);border:1px solid var(--line);border-radius:50px;padding:7px 15px;font-size:13px;font-family:'Outfit',sans-serif;color:var(--bark);cursor:pointer;transition:all 0.18s;}
+.switch-chip.active{background:var(--mud);color:var(--cream);border-color:var(--mud);}
+.switch-add{background:none;border:1px dashed var(--bark-light);color:var(--bark-light-aa);border-radius:50px;padding:7px 15px;font-size:13px;cursor:pointer;font-family:'Outfit',sans-serif;}
+
+/* PROFILE CARD (VIEW) */
+.profile-card{background:var(--warm-white);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 2px 16px rgba(61,46,30,0.07);margin-top:18px;}
+.pc-photo{position:relative;width:100%;aspect-ratio:16/10;min-height:210px;background:linear-gradient(135deg,#EAE0D8,#C8A888);overflow:hidden;}
+.pc-photo img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;}
+.pc-photo-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,0.25);}
+.pc-photo-empty .ic{font-size:34px;opacity:0.9;}
+.pc-photo-empty .tx{font-size:13px;font-weight:500;}
+.pc-head{padding:20px 22px 4px;}
+.pc-name{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:30px;color:var(--mud);line-height:1.05;}
+.pc-stable{font-size:13.5px;color:var(--bark-light-aa);margin-top:2px;font-style:italic;}
+.pc-stats{display:flex;flex-wrap:wrap;gap:7px;padding:14px 22px 4px;}
+.stat-pill{background:var(--cream);border:1px solid var(--line);border-radius:50px;padding:5px 12px;font-size:12.5px;color:var(--bark);}
+.stat-pill b{color:var(--mud);font-weight:600;}
+.tags{display:flex;flex-wrap:wrap;gap:7px;padding:12px 22px 6px;}
+.tag{background:var(--sage-pale);color:#4a5942;border-radius:50px;padding:5px 13px;font-size:12.5px;font-weight:500;}
+.pc-section{padding:16px 22px;border-top:1px solid var(--line);}
+.pc-section:first-of-type{border-top:none;}
+.pc-sec-label{font-family:'Outfit',sans-serif;font-weight:600;font-size:10.5px;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);margin-bottom:9px;}
+.pc-bio{font-size:14.5px;line-height:1.6;color:var(--bark);}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 18px;}
+@media(max-width:440px){.detail-grid{grid-template-columns:1fr;}.fld-row{grid-template-columns:1fr;}}
+.detail-item .dl{font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:var(--bark-light-aa);margin-bottom:2px;}
+.detail-item .dv{font-size:14px;color:var(--mud);line-height:1.45;}
+.pc-actions{display:flex;gap:10px;flex-wrap:wrap;padding:18px 22px 22px;border-top:1px solid var(--line);}
+
+/* BUTTONS */
+.btn{font-family:'Outfit',sans-serif;font-weight:600;font-size:13.5px;border-radius:50px;padding:11px 20px;cursor:pointer;border:none;transition:all 0.18s;text-decoration:none;display:inline-flex;align-items:center;gap:7px;}
+.btn-primary{background:var(--mud);color:var(--cream);}
+.btn-primary:hover{background:var(--bark);}
+.btn-ghost{background:transparent;border:1px solid var(--line);color:var(--bark);}
+.btn-ghost:hover{border-color:var(--bark-light);color:var(--mud);}
+.btn-gold{background:var(--gold);color:#fff;}
+.btn-gold:hover{filter:brightness(0.95);}
+
+/* EDIT FORM */
+.edit-card{background:var(--warm-white);border:1px solid var(--line);border-radius:18px;padding:6px 22px 22px;margin-top:18px;box-shadow:0 2px 16px rgba(61,46,30,0.07);}
+.form-sec{padding:18px 0;border-top:1px solid var(--line);}
+.form-sec:first-child{border-top:none;}
+.form-sec-h{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;color:var(--mud);margin-bottom:3px;}
+.form-sec-d{font-size:12.5px;color:var(--bark-light-aa);margin-bottom:14px;}
+.fld{margin-bottom:14px;}
+.fld label{display:block;font-size:12px;font-weight:500;color:var(--bark);margin-bottom:6px;}
+.fld input[type=text],.fld textarea,.fld select{width:100%;font-family:'Outfit',sans-serif;font-size:14px;color:var(--mud);background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:10px 13px;outline:none;transition:border-color 0.18s;}
+.fld input:focus,.fld textarea:focus,.fld select:focus{border-color:var(--gold);}
+.fld textarea{resize:vertical;min-height:64px;line-height:1.5;}
+.fld-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.chips{display:flex;flex-wrap:wrap;gap:7px;}
+.chip{background:var(--cream);border:1px solid var(--line);border-radius:50px;padding:8px 14px;font-size:13px;font-family:'Outfit',sans-serif;color:var(--bark);cursor:pointer;transition:all 0.15s;}
+.chip.on{background:var(--mud);color:var(--cream);border-color:var(--mud);}
+.chip.multi.on{background:var(--sage);border-color:var(--sage);color:#fff;}
+
+/* PHOTO EDIT */
+.photo-edit{position:relative;width:100%;aspect-ratio:16/10;min-height:200px;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,#EAE0D8,#C8A888);cursor:pointer;border:1px solid var(--line);margin-bottom:6px;}
+.photo-edit img{width:100%;height:100%;object-fit:cover;display:block;}
+.photo-edit-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,0.3);background:rgba(0,0,0,0.08);}
+.photo-edit-overlay .ic{font-size:30px;}
+.photo-edit-overlay .tx{font-size:13px;font-weight:500;}
+.photo-hint{font-size:11.5px;color:var(--bark-light-aa);margin-bottom:14px;}
+.photo-remove{font-size:12px;color:var(--bark-light-aa);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;margin-top:2px;}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:50px 20px;background:var(--warm-white);border:1px solid var(--line);border-radius:18px;margin-top:24px;}
+.empty .ic{font-size:44px;margin-bottom:12px;}
+.empty h3{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--mud);margin-bottom:8px;}
+.empty p{font-size:14px;color:var(--bark);max-width:380px;margin:0 auto 20px;line-height:1.55;}
+
+/* SAVE BANNER */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--mud);color:var(--cream);padding:12px 22px;border-radius:50px;font-size:13.5px;font-weight:500;box-shadow:0 12px 30px rgba(61,46,30,0.3);opacity:0;transition:all 0.3s;z-index:200;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+.note{font-size:12px;color:var(--bark-light-aa);line-height:1.55;background:var(--gold-pale);border-radius:12px;padding:12px 15px;margin-top:18px;}
+.note b{color:var(--mud);}
+
+footer{background:var(--mud);padding:24px 20px;border-top:1px solid rgba(255,255,255,0.06);margin-top:50px;}
+.footer-inner{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.footer-links{display:flex;gap:16px;}
+.footer-links a{font-size:12px;color:var(--mist);text-decoration:none;}
+.footer-links a:hover{color:var(--cream);}
+.footer-copy{font-size:11px;color:rgba(184,196,190,0.4);}
+</style>
+</head>
+<body>
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="/"><div class="nav-logo-text">Steed<span>Size</span></div></a>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+      <a href="/blog.html">Blog</a>
+      <a href="/shop.html">Shop</a>
+      <a href="/profile.html" class="active">Profiles</a>
+    </div>
+    <a class="profile-pill" href="/"><span>🐴</span><span class="pp-name">Rug tool</span></a>
+    <button class="hamburger" id="hamburger-btn" onclick="toggleHamburger()" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="/" onclick="closeMobileMenu()">Home</a>
+  <a href="/about.html" onclick="closeMobileMenu()">About</a>
+  <a href="/blog.html" onclick="closeMobileMenu()">Blog</a>
+  <a href="/shop.html" onclick="closeMobileMenu()">Shop</a>
+  <a href="/profile.html" onclick="closeMobileMenu()">Profiles</a>
+</div>
+
+<div class="wrap">
+  <div class="eyebrow">My yard</div>
+  <h1 class="page-h">Your horse's <em>profile</em></h1>
+  <p class="page-sub">Everything about your horse in one place — what you do together, their personality, and the details that help with sizing.</p>
+  <div style="margin-top:9px;"><button onclick="triggerImport()" style="background:none;border:none;font-family:'Outfit',sans-serif;font-size:12.5px;color:var(--bark-light-aa);text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:0;">⬆ Import a backup</button></div>
+  <input type="file" id="import-input" accept="application/json,.json" style="display:none;" onchange="handleImport(event)">
+
+  <!-- SWITCHER -->
+  <div class="switcher" id="switcher"></div>
+
+  <!-- EMPTY STATE -->
+  <div class="empty" id="empty-state" style="display:none;">
+    <div class="ic">🐴</div>
+    <h3>No profiles yet</h3>
+    <p>Create a profile for your horse — add their photo, what you do together, and the little things that make them them.</p>
+    <button class="btn btn-primary" onclick="newHorse()">Create a profile</button>
+    <button class="btn btn-ghost" onclick="triggerImport()" style="margin-left:8px;">Import a backup</button>
+  </div>
+
+  <!-- VIEW -->
+  <div id="profile-view" style="display:none;"></div>
+
+  <!-- EDIT -->
+  <div class="edit-card" id="profile-edit" style="display:none;">
+    <div class="form-sec">
+      <div class="form-sec-h">Photo</div>
+      <div class="form-sec-d">A clear photo of your horse. It's resized on your device — nothing is uploaded anywhere.</div>
+      <input type="file" id="photo-input" accept="image/*" style="display:none;" onchange="handlePhoto(event)">
+      <div class="photo-edit" id="photo-edit-box" onclick="document.getElementById('photo-input').click()">
+        <div class="photo-edit-overlay" id="photo-overlay"><div class="ic">📷</div><div class="tx">Tap to add a photo</div></div>
+      </div>
+      <button class="photo-remove" id="photo-remove" onclick="removePhoto(event)" style="display:none;">Remove photo</button>
+    </div>
+
+    <div class="form-sec">
+      <div class="form-sec-h">The basics</div>
+      <div class="fld"><label>Name</label><input type="text" id="f-name" placeholder="e.g. Captain"></div>
+      <div class="fld"><label>Stable name / nickname</label><input type="text" id="f-stable" placeholder="e.g. Cappy"></div>
+      <div class="fld-row">
+        <div class="fld"><label>Breed</label>
+          <select id="f-breed">
+            <option value="">Select…</option>
+            <option>Thoroughbred</option><option>Warmblood</option><option>Irish Sport Horse</option>
+            <option>Cob</option><option>Welsh (A/B/C/D)</option><option>Connemara</option><option>New Forest</option>
+            <option>Dartmoor</option><option>Shetland</option><option>Arab</option><option>Andalusian (PRE)</option>
+            <option>Lusitano</option><option>Friesian</option><option>Appaloosa</option><option>Quarter Horse</option>
+            <option>Highland</option><option>Fell</option><option>Dales</option><option>Clydesdale</option>
+            <option>Shire</option><option>Haflinger</option><option>Icelandic</option>
+            <option>Crossbreed / Unknown</option>
+          </select>
+        </div>
+        <div class="fld"><label>Colour</label>
+          <select id="f-colour">
+            <option value="">Select…</option>
+            <option>Bay</option><option>Dark bay / brown</option><option>Chestnut</option><option>Grey</option>
+            <option>Black</option><option>Dun</option><option>Palomino</option><option>Piebald</option>
+            <option>Skewbald</option><option>Roan</option><option>Appaloosa / spotted</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="fld-row">
+        <div class="fld"><label>Age</label><input type="text" id="f-age" placeholder="e.g. 7 or 'rising 6'"></div>
+        <div class="fld"><label>Height</label><input type="text" id="f-height" placeholder="e.g. 16.2hh"></div>
+      </div>
+      <div class="fld"><label>Sex</label>
+        <div class="chips" id="f-sex">
+          <button type="button" class="chip" data-v="Mare" onclick="pickOne('f-sex',this)">Mare</button>
+          <button type="button" class="chip" data-v="Gelding" onclick="pickOne('f-sex',this)">Gelding</button>
+          <button type="button" class="chip" data-v="Stallion" onclick="pickOne('f-sex',this)">Stallion</button>
+        </div>
+      </div>
+      <div class="fld"><label>Markings (optional)</label><input type="text" id="f-markings" placeholder="e.g. Blaze, two white socks"></div>
+    </div>
+
+    <div class="form-sec">
+      <div class="form-sec-h">What we do together</div>
+      <div class="form-sec-d">Pick everything that applies.</div>
+      <div class="fld"><label>Disciplines</label>
+        <div class="chips" id="f-disciplines">
+          <button type="button" class="chip multi" data-v="Dressage" onclick="pickMulti(this)">Dressage</button>
+          <button type="button" class="chip multi" data-v="Show jumping" onclick="pickMulti(this)">Show jumping</button>
+          <button type="button" class="chip multi" data-v="Eventing" onclick="pickMulti(this)">Eventing</button>
+          <button type="button" class="chip multi" data-v="Cross country" onclick="pickMulti(this)">Cross country</button>
+          <button type="button" class="chip multi" data-v="Hacking" onclick="pickMulti(this)">Hacking</button>
+          <button type="button" class="chip multi" data-v="Showing" onclick="pickMulti(this)">Showing</button>
+          <button type="button" class="chip multi" data-v="Pony Club" onclick="pickMulti(this)">Pony Club</button>
+          <button type="button" class="chip multi" data-v="Endurance" onclick="pickMulti(this)">Endurance</button>
+          <button type="button" class="chip multi" data-v="Western" onclick="pickMulti(this)">Western</button>
+          <button type="button" class="chip multi" data-v="In-hand" onclick="pickMulti(this)">In-hand</button>
+          <button type="button" class="chip multi" data-v="Happy hacker" onclick="pickMulti(this)">Happy hacker</button>
+          <button type="button" class="chip multi" data-v="Retired / companion" onclick="pickMulti(this)">Retired / companion</button>
+        </div>
+      </div>
+      <div class="fld-row">
+        <div class="fld"><label>Level (optional)</label><input type="text" id="f-level" placeholder="e.g. BD Novice"></div>
+        <div class="fld"><label>Owned since (optional)</label><input type="text" id="f-owned" placeholder="e.g. 2021"></div>
+      </div>
+    </div>
+
+    <div class="form-sec">
+      <div class="form-sec-h">Personality</div>
+      <div class="form-sec-d">The bit that makes the profile theirs.</div>
+      <div class="fld"><label>About</label><textarea id="f-bio" placeholder="Tell us about your horse — how you met, what they're like…"></textarea></div>
+      <div class="fld"><label>Temperament</label><input type="text" id="f-temperament" placeholder="e.g. Cheeky, affectionate, bombproof"></div>
+      <div class="fld-row">
+        <div class="fld"><label>Favourite treats</label><input type="text" id="f-treats" placeholder="e.g. Polos, carrots"></div>
+        <div class="fld"><label>Not a fan of…</label><input type="text" id="f-dislikes" placeholder="e.g. puddles, clippers"></div>
+      </div>
+      <div class="fld"><label>Favourite thing to do</label><input type="text" id="f-favourite" placeholder="e.g. a good gallop on the beach"></div>
+    </div>
+
+    <div class="form-sec">
+      <div class="form-sec-h">Care &amp; sizing</div>
+      <div class="form-sec-d">These also feed your rug recommendation on the main tool.</div>
+      <div class="fld"><label>Coat / clip</label>
+        <div class="chips" id="f-coat">
+          <button type="button" class="chip" data-v="unclipped" onclick="pickOne('f-coat',this)">Full winter coat</button>
+          <button type="button" class="chip" data-v="trace" onclick="pickOne('f-coat',this)">Trace clip</button>
+          <button type="button" class="chip" data-v="hunter" onclick="pickOne('f-coat',this)">Hunter / full clip</button>
+        </div>
+      </div>
+      <div class="fld"><label>Living</label>
+        <div class="chips" id="f-living">
+          <button type="button" class="chip" data-v="stabled" onclick="pickOne('f-living',this)">Stabled</button>
+          <button type="button" class="chip" data-v="field" onclick="pickOne('f-living',this)">Field kept</button>
+          <button type="button" class="chip" data-v="both" onclick="pickOne('f-living',this)">Both / varies</button>
+        </div>
+      </div>
+      <div class="fld"><label>Tends to…</label>
+        <div class="chips" id="f-feel">
+          <button type="button" class="chip" data-v="cold" onclick="pickOne('f-feel',this)">Run cold</button>
+          <button type="button" class="chip" data-v="average" onclick="pickOne('f-feel',this)">Feel average</button>
+          <button type="button" class="chip" data-v="warm" onclick="pickOne('f-feel',this)">Run warm</button>
+        </div>
+      </div>
+      <div class="fld-row">
+        <div class="fld"><label>Approx weight (optional)</label><input type="text" id="f-weight" placeholder="e.g. 550kg"></div>
+        <div class="fld"><label>Rug size (optional)</label><input type="text" id="f-rugsize" placeholder="e.g. 6'3&quot;"></div>
+      </div>
+      <div class="fld"><label>Rugs I own (optional)</label><textarea id="f-wardrobe" placeholder="e.g. 100g turnout, 300g turnout, fleece cooler, rain sheet"></textarea></div>
+    </div>
+
+    <div class="form-sec">
+      <div class="form-sec-h">Achievements &amp; goals</div>
+      <div class="fld"><label>Achievements (optional)</label><textarea id="f-achievements" placeholder="Rosettes, placings, proud moments…"></textarea></div>
+      <div class="fld"><label>Goals (optional)</label><textarea id="f-goals" placeholder="What are you working towards?"></textarea></div>
+    </div>
+
+    <div class="pc-actions" style="border-top:1px solid var(--line);padding:18px 0 4px;">
+      <button class="btn btn-primary" onclick="saveProfile()">Save profile</button>
+      <button class="btn btn-ghost" onclick="cancelEdit()">Cancel</button>
+      <button class="btn btn-ghost" id="delete-btn" onclick="deleteHorse()" style="margin-left:auto;color:#A0422A;">Delete</button>
+    </div>
+  </div>
+
+  <div class="note"><b>Heads up:</b> profiles are saved on this device only (in your browser), so they won't appear on another phone or computer, and could be lost if you clear your browser data. Use <b>Export backup</b> on each profile to keep a copy, and <b>Import a backup</b> to restore one. Cloud accounts are coming later. &nbsp;<a href="/privacy.html#your-data" style="color:var(--mud);font-weight:600;">How your data is saved →</a></div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="/">Home</a><a href="/about.html">About</a><a href="/blog.html">Blog</a><a href="/shop.html">Shop</a>
+      <a href="/privacy.html">Privacy</a>
+    </div>
+    <div class="footer-copy">© 2026 SteedSize</div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function toggleHamburger(){var b=document.getElementById('hamburger-btn'),m=document.getElementById('mobile-menu');if(!b||!m)return;b.classList.toggle('open');m.classList.toggle('open');}
+function closeMobileMenu(){var b=document.getElementById('hamburger-btn'),m=document.getElementById('mobile-menu');if(b)b.classList.remove('open');if(m)m.classList.remove('open');}
+
+/* ---------- IndexedDB photo store ---------- */
+var DB_NAME='steedsize', STORE='photos';
+function idb(){return new Promise(function(res,rej){var r=indexedDB.open(DB_NAME,1);r.onupgradeneeded=function(){var db=r.result;if(!db.objectStoreNames.contains(STORE))db.createObjectStore(STORE);};r.onsuccess=function(){res(r.result);};r.onerror=function(){rej(r.error);};});}
+function savePhotoBlob(id,blob){return idb().then(function(db){return new Promise(function(res,rej){var tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put(blob,'p_'+id);tx.oncomplete=function(){res();};tx.onerror=function(){rej(tx.error);};});});}
+function getPhotoBlob(id){return idb().then(function(db){return new Promise(function(res,rej){var tx=db.transaction(STORE,'readonly');var rq=tx.objectStore(STORE).get('p_'+id);rq.onsuccess=function(){res(rq.result||null);};rq.onerror=function(){rej(rq.error);};});});}
+function deletePhotoBlob(id){return idb().then(function(db){return new Promise(function(res,rej){var tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).delete('p_'+id);tx.oncomplete=function(){res();};tx.onerror=function(){rej(tx.error);};});});}
+
+/* ---------- State ---------- */
+var horses=[], activeId=null, editingPhotoBlob=undefined, editingPhotoRemoved=false;
+
+function load(){
+  try{
+    var s=localStorage.getItem('steedsize_horses');
+    var a=localStorage.getItem('steedsize_active');
+    horses=s?JSON.parse(s):[];
+    activeId=a?parseInt(a):(horses[0]?horses[0].id:null);
+  }catch(e){horses=[];}
+  if(!horses.some(function(h){return h.id===activeId;})) activeId=horses[0]?horses[0].id:null;
+}
+function persist(){localStorage.setItem('steedsize_horses',JSON.stringify(horses));if(activeId!=null)localStorage.setItem('steedsize_active',String(activeId));}
+function active(){return horses.find(function(h){return h.id===activeId;})||null;}
+
+/* ---------- Render ---------- */
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function renderSwitcher(){
+  var sw=document.getElementById('switcher');
+  if(horses.length===0){sw.innerHTML='';return;}
+  var html='';
+  horses.forEach(function(h){
+    html+='<button class="switch-chip'+(h.id===activeId?' active':'')+'" onclick="selectHorse('+h.id+')">'+esc(h.name||'Unnamed')+'</button>';
+  });
+  html+='<button class="switch-add" onclick="newHorse()">+ Add horse</button>';
+  sw.innerHTML=html;
+}
+
+function detailRow(label,val){if(!val)return '';return '<div class="detail-item"><div class="dl">'+label+'</div><div class="dv">'+esc(val)+'</div></div>';}
+
+function renderView(){
+  var h=active();
+  var view=document.getElementById('profile-view');
+  if(!h){view.style.display='none';return;}
+  view.style.display='block';
+
+  var coatMap={unclipped:'Full winter coat',trace:'Trace clip',hunter:'Hunter / full clip'};
+  var liveMap={stabled:'Stabled',field:'Field kept',both:'Both / varies'};
+  var feelMap={cold:'Runs cold',average:'Average',warm:'Runs warm'};
+
+  var stats='';
+  if(h.breed) stats+='<span class="stat-pill"><b>'+esc(h.breed)+'</b></span>';
+  if(h.age) stats+='<span class="stat-pill">'+esc(h.age)+(/\d$/.test(h.age)?' yrs':'')+'</span>';
+  if(h.height) stats+='<span class="stat-pill">'+esc(h.height)+'</span>';
+  if(h.colour) stats+='<span class="stat-pill">'+esc(h.colour)+'</span>';
+  if(h.sex) stats+='<span class="stat-pill">'+esc(h.sex)+'</span>';
+
+  var tags='';
+  (h.disciplines||[]).forEach(function(d){tags+='<span class="tag">'+esc(d)+'</span>';});
+
+  var html='';
+  html+='<div class="profile-card">';
+  html+='<div class="pc-photo" id="view-photo"><div class="pc-photo-empty" id="view-photo-empty"><div class="ic">🐴</div><div class="tx">No photo yet</div></div></div>';
+  html+='<div class="pc-head"><div class="pc-name">'+esc(h.name||'Unnamed')+'</div>'+(h.stable?'<div class="pc-stable">"'+esc(h.stable)+'"</div>':'')+'</div>';
+  if(stats) html+='<div class="pc-stats">'+stats+'</div>';
+  if(tags) html+='<div class="tags">'+tags+'</div>';
+
+  if(h.bio) html+='<div class="pc-section"><div class="pc-sec-label">About</div><div class="pc-bio">'+esc(h.bio)+'</div></div>';
+
+  var pers=detailRow('Temperament',h.temperament)+detailRow('Favourite treats',h.treats)+detailRow('Not a fan of',h.dislikes)+detailRow('Favourite thing',h.favourite);
+  if(pers) html+='<div class="pc-section"><div class="pc-sec-label">Personality</div><div class="detail-grid">'+pers+'</div></div>';
+
+  var care=detailRow('Coat',coatMap[h.coat]||'')+detailRow('Living',liveMap[h.living]||'')+detailRow('Temperature',feelMap[h.feel]||'')+detailRow('Weight',h.weight)+detailRow('Rug size',h.rugsize)+detailRow('Level',h.level)+detailRow('Owned since',h.owned)+detailRow('Markings',h.markings);
+  if(care) html+='<div class="pc-section"><div class="pc-sec-label">Care &amp; sizing</div><div class="detail-grid">'+care+'</div></div>';
+  if(h.wardrobe) html+='<div class="pc-section"><div class="pc-sec-label">Rug wardrobe</div><div class="pc-bio">'+esc(h.wardrobe)+'</div></div>';
+
+  if(h.achievements||h.goals){
+    html+='<div class="pc-section"><div class="pc-sec-label">Achievements &amp; goals</div><div class="detail-grid">'+detailRow('Achievements',h.achievements)+detailRow('Goals',h.goals)+'</div></div>';
+  }
+
+  html+='<div class="pc-actions"><button class="btn btn-primary" onclick="startEdit()">Edit profile</button><button class="btn btn-ghost" onclick="exportBackup()">⬇ Export backup</button></div>';
+  html+='</div>';
+  view.innerHTML=html;
+
+  // load photo into view
+  getPhotoBlob(h.id).then(function(blob){
+    var box=document.getElementById('view-photo');
+    if(blob && box){var url=URL.createObjectURL(blob);box.innerHTML='<img src="'+url+'" alt="'+esc(h.name)+'">';}
+  });
+}
+
+/* ---------- Edit ---------- */
+function setChipsOne(groupId,val){
+  var g=document.getElementById(groupId);
+  Array.prototype.forEach.call(g.querySelectorAll('.chip'),function(c){c.classList.toggle('on',c.getAttribute('data-v')===val);});
+}
+function setChipsMulti(groupId,vals){
+  var g=document.getElementById(groupId);
+  Array.prototype.forEach.call(g.querySelectorAll('.chip'),function(c){c.classList.toggle('on',(vals||[]).indexOf(c.getAttribute('data-v'))>=0);});
+}
+function pickOne(groupId,btn){
+  var g=document.getElementById(groupId);
+  Array.prototype.forEach.call(g.querySelectorAll('.chip'),function(c){c.classList.remove('on');});
+  btn.classList.add('on');
+}
+function pickMulti(btn){btn.classList.toggle('on');}
+function getOne(groupId){var g=document.getElementById(groupId);var on=g.querySelector('.chip.on');return on?on.getAttribute('data-v'):'';}
+function getMulti(groupId){var g=document.getElementById(groupId);return Array.prototype.map.call(g.querySelectorAll('.chip.on'),function(c){return c.getAttribute('data-v');});}
+function val(id){return document.getElementById(id).value.trim();}
+function setVal(id,v){document.getElementById(id).value=v||'';}
+
+function startEdit(){
+  var h=active();if(!h)return;
+  editingPhotoBlob=undefined; editingPhotoRemoved=false;
+  setVal('f-name',h.name);setVal('f-stable',h.stable);setVal('f-breed',h.breed);setVal('f-colour',h.colour);
+  setVal('f-age',h.age);setVal('f-height',h.height);setVal('f-markings',h.markings);
+  setVal('f-level',h.level);setVal('f-owned',h.owned);setVal('f-bio',h.bio);setVal('f-temperament',h.temperament);
+  setVal('f-treats',h.treats);setVal('f-dislikes',h.dislikes);setVal('f-favourite',h.favourite);
+  setVal('f-weight',h.weight);setVal('f-rugsize',h.rugsize);setVal('f-wardrobe',h.wardrobe);
+  setVal('f-achievements',h.achievements);setVal('f-goals',h.goals);
+  setChipsOne('f-sex',h.sex);setChipsOne('f-coat',h.coat);setChipsOne('f-living',h.living);setChipsOne('f-feel',h.feel);
+  setChipsMulti('f-disciplines',h.disciplines);
+  document.getElementById('delete-btn').style.display=horses.length>0?'inline-flex':'none';
+  // photo preview
+  getPhotoBlob(h.id).then(function(blob){ renderPhotoEdit(blob); });
+  show('edit');
+}
+function renderPhotoEdit(blob){
+  var box=document.getElementById('photo-edit-box');
+  var rm=document.getElementById('photo-remove');
+  if(blob){
+    var url=URL.createObjectURL(blob);
+    box.innerHTML='<img src="'+url+'" alt="preview"><div class="photo-edit-overlay" style="background:rgba(0,0,0,0.18)"><div class="tx">Tap to change</div></div>';
+    rm.style.display='inline';
+  }else{
+    box.innerHTML='<div class="photo-edit-overlay" id="photo-overlay"><div class="ic">📷</div><div class="tx">Tap to add a photo</div></div>';
+    rm.style.display='none';
+  }
+}
+function handlePhoto(e){
+  var file=e.target.files&&e.target.files[0];if(!file)return;
+  resizeImage(file,900).then(function(blob){
+    editingPhotoBlob=blob; editingPhotoRemoved=false;
+    renderPhotoEdit(blob);
+  });
+}
+function removePhoto(e){e.stopPropagation();editingPhotoBlob=undefined;editingPhotoRemoved=true;renderPhotoEdit(null);}
+function resizeImage(file,maxDim){
+  return new Promise(function(res,rej){
+    var img=new Image();
+    img.onload=function(){
+      var w=img.width,h=img.height;
+      if(w>h&&w>maxDim){h=Math.round(h*maxDim/w);w=maxDim;}
+      else if(h>=w&&h>maxDim){w=Math.round(w*maxDim/h);h=maxDim;}
+      var c=document.createElement('canvas');c.width=w;c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      c.toBlob(function(b){res(b);},'image/jpeg',0.85);
+    };
+    img.onerror=rej;
+    img.src=URL.createObjectURL(file);
+  });
+}
+
+function saveProfile(){
+  var h=active();if(!h)return;
+  h.name=val('f-name')||'Unnamed';h.stable=val('f-stable');h.breed=val('f-breed');h.colour=val('f-colour');
+  h.age=val('f-age');h.height=val('f-height');h.markings=val('f-markings');h.sex=getOne('f-sex');
+  h.disciplines=getMulti('f-disciplines');h.level=val('f-level');h.owned=val('f-owned');
+  h.bio=val('f-bio');h.temperament=val('f-temperament');h.treats=val('f-treats');h.dislikes=val('f-dislikes');h.favourite=val('f-favourite');
+  h.coat=getOne('f-coat')||'unclipped';h.living=getOne('f-living')||'stabled';h.feel=getOne('f-feel')||'average';
+  h.weight=val('f-weight');h.rugsize=val('f-rugsize');h.wardrobe=val('f-wardrobe');
+  h.achievements=val('f-achievements');h.goals=val('f-goals');
+  persist();
+  var photoOps=Promise.resolve();
+  if(editingPhotoBlob!==undefined){photoOps=savePhotoBlob(h.id,editingPhotoBlob);}
+  else if(editingPhotoRemoved){photoOps=deletePhotoBlob(h.id);}
+  photoOps.then(function(){renderSwitcher();renderView();show('view');toast('Profile saved');});
+}
+function cancelEdit(){ if(!active()){show('empty');}else{show('view');} }
+
+function newHorse(){
+  var id=Date.now();
+  horses.push({id:id,name:'',coat:'unclipped',living:'stabled',feel:'average',disciplines:[]});
+  activeId=id;persist();renderSwitcher();startEdit();
+}
+function selectHorse(id){activeId=id;persist();renderSwitcher();renderView();show('view');}
+function deleteHorse(){
+  var h=active();if(!h)return;
+  if(!confirm('Delete '+(h.name||'this horse')+'\u2019s profile? This cannot be undone.'))return;
+  deletePhotoBlob(h.id);
+  horses=horses.filter(function(x){return x.id!==h.id;});
+  activeId=horses[0]?horses[0].id:null;persist();
+  renderSwitcher();
+  if(horses.length===0){show('empty');}else{renderView();show('view');}
+  toast('Profile deleted');
+}
+
+/* ---------- Export ---------- */
+function blobToDataURL(blob){return new Promise(function(res){var r=new FileReader();r.onload=function(){res(r.result);};r.readAsDataURL(blob);});}
+function exportBackup(){
+  var h=active();if(!h)return;
+  getPhotoBlob(h.id).then(function(blob){
+    return blob?blobToDataURL(blob):Promise.resolve(null);
+  }).then(function(photoData){
+    var data={app:'SteedSize',type:'horse-profile',version:1,exported:new Date().toISOString(),profile:h,photo:photoData};
+    var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url;a.download=(h.name||'horse').replace(/[^a-z0-9]/gi,'-').toLowerCase()+'-profile.json';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    setTimeout(function(){URL.revokeObjectURL(url);},1000);
+    toast('Backup downloaded');
+  });
+}
+function triggerImport(){ document.getElementById('import-input').click(); }
+function handleImport(e){
+  var file=e.target.files&&e.target.files[0];
+  if(!file){return;}
+  var reader=new FileReader();
+  reader.onload=function(){
+    var data;
+    try{ data=JSON.parse(reader.result); }catch(err){ toast('Could not read that file'); e.target.value=''; return; }
+    var prof=(data&&data.profile)?data.profile:data;
+    if(!prof||typeof prof!=='object'||(!prof.name&&!prof.coat)){ toast('That doesn\u2019t look like a profile'); e.target.value=''; return; }
+    var newId=Date.now();
+    var horse={};
+    for(var k in prof){ if(prof.hasOwnProperty(k)) horse[k]=prof[k]; }
+    horse.id=newId;
+    if(!horse.disciplines) horse.disciplines=[];
+    horses.push(horse); activeId=newId; persist();
+    var finish=function(){ renderSwitcher(); renderView(); show('view'); toast('Profile restored'); };
+    if(data&&data.photo){
+      fetch(data.photo).then(function(r){return r.blob();}).then(function(blob){ return savePhotoBlob(newId,blob); }).then(finish).catch(finish);
+    } else { finish(); }
+    e.target.value='';
+  };
+  reader.readAsText(file);
+}
+
+/* ---------- View switching ---------- */
+function show(which){
+  document.getElementById('empty-state').style.display=which==='empty'?'block':'none';
+  document.getElementById('profile-view').style.display=which==='view'?'block':'none';
+  document.getElementById('profile-edit').style.display=which==='edit'?'block':'none';
+  if(which!=='edit')window.scrollTo({top:0,behavior:'smooth'});
+}
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2200);}
+
+/* ---------- Init ---------- */
+load();
+renderSwitcher();
+if(horses.length===0){show('empty');}
+else{renderView();show('view');}
+</script>
+</body>
+</html>

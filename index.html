@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="color-scheme" content="light">
 <title>SteedSize — Know What Rug, Every Day</title>
 <meta name="description" content="Free daily rug weight checker for horse owners.">
 <meta name="robots" content="noindex, nofollow">
@@ -519,6 +520,18 @@ footer{background:var(--mud);padding:24px 20px;border-top:1px solid rgba(255,255
 /* Personalise nudge banner */
 .personalise-banner{display:none;align-items:center;gap:10px;background:var(--gold-pale);border:1px solid rgba(196,146,58,0.25);border-radius:10px;padding:10px 14px;margin-bottom:14px;}
 .personalise-banner.visible{display:flex;}
+/* Build-full-profile nudge (shown when a horse exists but the profile is sparse) */
+.profile-nudge{display:none;position:relative;align-items:center;gap:13px;background:linear-gradient(135deg,#FAF8F4,#F5E6CC);border:1px solid rgba(196,146,58,0.30);border-radius:14px;padding:15px 16px;margin-bottom:16px;box-shadow:0 2px 10px rgba(61,46,30,0.06);}
+.profile-nudge.visible{display:flex;}
+.pn-icon{font-size:26px;flex-shrink:0;}
+.pn-body{flex:1;min-width:0;padding-right:14px;}
+.pn-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--mud);line-height:1.15;margin-bottom:2px;}
+.pn-sub{font-size:12.5px;color:var(--bark);line-height:1.45;}
+.pn-btn{flex-shrink:0;background:var(--mud);color:var(--cream);font-family:'Outfit',sans-serif;font-weight:600;font-size:13px;border-radius:50px;padding:10px 16px;text-decoration:none;white-space:nowrap;transition:background 0.2s;}
+.pn-btn:hover{background:var(--bark);}
+.pn-close{position:absolute;top:7px;right:10px;background:none;border:none;font-size:18px;line-height:1;color:var(--bark-light-aa);cursor:pointer;padding:2px;opacity:0.55;}
+.pn-close:hover{opacity:1;}
+@media(max-width:520px){.profile-nudge{flex-wrap:wrap;}.pn-body{padding-right:20px;}.pn-btn{width:100%;text-align:center;}}
 .pb-text{font-size:12px;color:var(--bark);line-height:1.5;flex:1;}
 .pb-text strong{color:var(--mud);}
 .pb-btn{font-size:11px;font-weight:600;color:var(--mud);background:var(--gold);border:none;border-radius:50px;padding:5px 12px;cursor:pointer;white-space:nowrap;font-family:'Outfit',sans-serif;}
@@ -840,6 +853,7 @@ footer{background:var(--mud);padding:24px 20px;border-top:1px solid rgba(255,255
       <a href="/about.html">About</a>
       <a href="/blog.html">Blog</a>
       <a href="/shop.html">Shop</a>
+      <a href="/profile.html">Profiles</a>
     </div>
     <div class="switcher-wrap" id="switcher-wrap">
       <div class="profile-pill" onclick="toggleSwitcher(event)">
@@ -855,6 +869,7 @@ footer{background:var(--mud);padding:24px 20px;border-top:1px solid rgba(255,255
           <div class="btn-add-horse-icon">+</div>
           Add a horse
         </button>
+        <a href="/profile.html" style="display:block;text-align:center;margin-top:10px;font-size:12.5px;color:var(--bark-light-aa,#7A5535);text-decoration:none;">View full profiles →</a>
       </div>
     </div>
     <button class="hamburger" id="hamburger-btn" onclick="toggleHamburger()" aria-label="Menu">
@@ -868,6 +883,7 @@ footer{background:var(--mud);padding:24px 20px;border-top:1px solid rgba(255,255
   <a href="/about.html" onclick="closeMobileMenu()">About</a>
   <a href="/blog.html" onclick="closeMobileMenu()">Blog</a>
   <a href="/shop.html" onclick="closeMobileMenu()">Shop</a>
+  <a href="/profile.html" onclick="closeMobileMenu()">Profiles</a>
 </div>
 
 <!-- HERO -->
@@ -973,6 +989,17 @@ footer{background:var(--mud);padding:24px 20px;border-top:1px solid rgba(255,255
       <span style="font-size:16px;">🐴</span>
       <div class="pb-text"><strong>No horse added yet.</strong> These recommendations are based on an average horse profile. Add your horse so we can tailor them to their coat, build and living setup.</div>
       <button class="pb-btn" onclick="openProfile()">Add horse</button>
+    </div>
+
+    <!-- Build full profile nudge -->
+    <div class="profile-nudge" id="profile-nudge">
+      <button class="pn-close" onclick="dismissProfileNudge()" aria-label="Dismiss">&times;</button>
+      <div class="pn-icon">🐴</div>
+      <div class="pn-body">
+        <div class="pn-title" id="pn-title">There's more to your horse than rugging</div>
+        <div class="pn-sub">Add a photo, what you do together, and their personality — and keep everything about them in one place.</div>
+      </div>
+      <a class="pn-btn" id="pn-btn" href="/profile.html">Build profile →</a>
     </div>
 
     <!-- Top 4 matched rugs carousel -->
@@ -1311,6 +1338,7 @@ footer{background:var(--mud);padding:24px 20px;border-top:1px solid rgba(255,255
       <a href="/about.html">About</a>
       <a href="/blog.html">Blog</a>
       <a href="/shop.html">Shop</a>
+      <a href="/privacy.html">Privacy</a>
     </div>
     <div class="footer-copy">© 2026 SteedSize</div>
     <div class="footer-disc">SteedSize recommendations are based on widely used equestrian guidelines and are provided as general guidance only. They do not constitute professional veterinary or equestrian advice. Always use your own judgement and consult a qualified professional if you have any concerns about your horse's welfare.</div>
@@ -2563,6 +2591,36 @@ function updatePersonaliseBanner() {
   if (btn) {
     btn.textContent = hasHorse ? '← Edit profile' : '← Add your horse';
   }
+  updateProfileNudge(hasHorse);
+}
+
+function profileHasRichDetails(h) {
+  if (!h) return false;
+  return !!(h.stable || h.age || h.height || h.colour || h.sex || h.markings || h.bio ||
+    h.temperament || h.treats || h.dislikes || h.favourite || h.level || h.owned ||
+    h.weight || h.rugsize || h.wardrobe || h.achievements || h.goals ||
+    (h.disciplines && h.disciplines.length));
+}
+function updateProfileNudge(hasHorse) {
+  const nudge = document.getElementById('profile-nudge');
+  if (!nudge) return;
+  let dismissed = false;
+  try { dismissed = localStorage.getItem('steedsize_profilenudge_off') === '1'; } catch (e) {}
+  const h = horses.find(function(x){ return x.id === activeHorseId; });
+  const sparse = h && !profileHasRichDetails(h);
+  if (hasHorse && sparse && !dismissed) {
+    const nm = (h && h.name) ? h.name : 'your horse';
+    const t = document.getElementById('pn-title');
+    if (t) t.textContent = "There's more to " + nm + " than rugging";
+    nudge.classList.add('visible');
+  } else {
+    nudge.classList.remove('visible');
+  }
+}
+function dismissProfileNudge() {
+  try { localStorage.setItem('steedsize_profilenudge_off', '1'); } catch (e) {}
+  const n = document.getElementById('profile-nudge');
+  if (n) n.classList.remove('visible');
 }
 
 
